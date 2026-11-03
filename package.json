@@ -1,0 +1,23 @@
+{
+  "name": "spark",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "bootstrap": "bash scripts/bootstrap.sh",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fsd": "steiger ./src",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm run typecheck && npm run lint && npm run lint:fsd && npm run test",
+    "db:types": "supabase gen types typescript --local > src/shared/api/supabase/database.types.ts",
+    "seed": "tsx --conditions=react-server scripts/seed.ts",
+    "eval": "tsx --conditions=react-server evals/run.ts"
+  }
+}
