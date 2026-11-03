@@ -145,6 +145,10 @@ Tasks live in Jira, accessed via the `atlassian` MCP server (`.mcp.json`).
 - Tasks with label `human` are not executed by the agent.
 - Deleting tasks and comments in Jira is forbidden.
 
+## Skills
+
+- For React/Next.js code use the `vercel-react-best-practices` skill. If it conflicts with FSD or the rules in this file — CLAUDE.md and SPEC win.
+
 ## Definition of done
 
 1. `npm run check` is green; if the task changes UI — an e2e test is added or updated and `npm run test:e2e` is green.
