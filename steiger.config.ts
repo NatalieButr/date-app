@@ -1,16 +1,14 @@
-import fsd from '@feature-sliced/steiger-plugin';
-import { defineConfig } from 'steiger';
+import { defineConfig } from 'steiger'
+import fsd from '@feature-sliced/steiger-plugin'
 
 export default defineConfig([
   ...fsd.configs.recommended,
   {
-    ignores: ['**/.gitkeep', '**/__tests__/**', '**/__mocks__/**'],
-  },
-  {
-    // shared импортируется по сегментам: @/shared/ui/button, @/shared/ai, @/shared/config/env.public
-    files: ['./src/shared/**'],
+    // _app and _pages are the FSD-recommended names for Next.js to avoid
+    // conflicts with the framework's own app/ and pages/ directories.
+    // See: https://feature-sliced.design/docs/guides/tech/with-nextjs
     rules: {
-      'fsd/public-api': 'off',
+      'fsd/typo-in-layer-name': 'off',
     },
   },
-]);
+])

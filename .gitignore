@@ -1,3 +1,4 @@
+.idea/
 node_modules/
 .next/
 out/
@@ -12,3 +13,8 @@ next-env.d.ts
 supabase/.temp/
 supabase/.branches/
 .DS_Store
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

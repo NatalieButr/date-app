@@ -626,6 +626,7 @@ DEMO_USER_PASSWORD=
 | `npm run lint:fsd` | `steiger ./src` |
 | `npm run test` | Vitest |
 | `npm run check` | typecheck + lint + lint:fsd + test — **обязателен перед завершением задачи** |
+| `npm run test:e2e` | Playwright e2e (`e2e/`), проекты `desktop` и `mobile-360` |
 | `npm run db:types` | Генерация `database.types.ts` |
 | `npm run seed` | F1 |
 | `npm run eval` | F10 |
@@ -638,6 +639,8 @@ DEMO_USER_PASSWORD=
 - Цикл агента на замоканном `shared/ai`: лимит шагов, ошибка инструмента, параллельные вызовы.
 - `pricing`: расчёт стоимости с cache-токенами.
 - Сетевые вызовы Claude/Voyage в юнит-тестах запрещены — только моки.
+
+E2E (Playwright, `e2e/*.spec.ts`): смоук главной уже есть; по мере готовности фич добавляются сценарии онбординга, свайпа и матча, чата. CI в GitHub Actions на каждый PR: `check` → `build` → e2e.
 
 Ручной смоук перед деплоем: регистрация → онбординг → лента → матч → чат на двух аккаунтах → агент.
 
