@@ -149,9 +149,14 @@ Tasks live in Jira, accessed via the `atlassian` MCP server (`.mcp.json`).
 
 - For React/Next.js code use the `vercel-react-best-practices` skill. If it conflicts with FSD or the rules in this file — CLAUDE.md and SPEC win.
 
+## Code review
+
+- Before pushing or opening a PR, run the `code-reviewer` subagent (`.claude/agents/code-reviewer.md`) or `/review`.
+- A PR is opened only with verdict APPROVE. Blockers are fixed, not argued away; H-zone findings go to Natallia.
+
 ## Definition of done
 
-1. `npm run check` is green; if the task changes UI — an e2e test is added or updated and `npm run test:e2e` is green.
+1. `code-reviewer` verdict is APPROVE. `npm run check` is green; if the task changes UI — an e2e test is added or updated and `npm run test:e2e` is green.
 2. Only slices from the task are changed; new public API exports are listed in the report.
 3. New env variables are added to `.env.example`, `src/shared/config/env.ts`, and SPEC §12.
 4. If the contract changed (schema, endpoint, table) — SPEC.md is updated.

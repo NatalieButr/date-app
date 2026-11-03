@@ -11,4 +11,19 @@ export default defineConfig([
       'fsd/typo-in-layer-name': 'off',
     },
   },
+  {
+    // shared uses direct imports by file/segment (SPEC §4.3), not a barrel index.ts.
+    // fsd/public-api is intentionally disabled for the entire shared layer.
+    files: ['src/shared/**'],
+    rules: {
+      'fsd/public-api': 'off',
+    },
+  },
+  {
+    // _app/providers is the FSD-recommended convention for Next.js global providers.
+    files: ['src/_app/**'],
+    rules: {
+      'fsd/segments-by-purpose': 'off',
+    },
+  },
 ])
