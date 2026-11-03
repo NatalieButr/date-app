@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NEXT_TELEMETRY_DISABLED: 1
+  # Фиктивные значения: каркасу нужна только корректная форма публичных env.
+  # Unit- и e2e-тесты не ходят в Claude, Voyage и Supabase, поэтому реальные ключи в CI не нужны.
+  NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ci-dummy-publishable-key
+
+jobs:
+  check:
+    name: Typecheck · Lint · FSD · Unit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+
+  e2e:
+    name: Build · Playwright
+    runs-on: ubuntu-latest
+    needs: check
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright (Chromium)
+        run: npx playwright install --with-deps chromium
+
+      - run: npm run build
+      - run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
