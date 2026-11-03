@@ -25,10 +25,11 @@ Work with Jira via the `atlassian` MCP server.
 - Implement the task following CLAUDE.md rules. H zones — scaffold only.
 - Run `npm run check` and bring it to green. If the task changes UI — add or update an e2e test in `e2e/` and run `npm run test:e2e`. Do not run `npm run seed` or `npm run eval`.
 - Commit: `<type>(<key>): <what was done>`.
-- If `origin` is configured — push the branch; if `gh` is available — open a PR to the main branch. Do not merge yourself.
+- Run the `code-reviewer` subagent on the branch. Fix every Blocker and every Should fix (or explain in the report why not), commit the fixes, and run the review again. Repeat until the verdict is APPROVE, at most 3 rounds; if it is still REQUEST_CHANGES after that, stop and show me the report. Never edit H-zone files beyond the scaffold to satisfy the reviewer — list those findings for me instead.
+- If `origin` is configured — push the branch; if `gh` is available — open a PR to the main branch with the final review summary in the description. Do not merge yourself.
 
 ## 4. Jira report
 
-- Add a comment via `addCommentToJiraIssue`: what was done, changed slices, new public API exports, remaining `TODO(human)` and `TODO(spec)`, PR link (if any).
+- Add a comment via `addOrEditJiraIssueComment`: what was done, changed slices, new public API exports, remaining `TODO(human)` and `TODO(spec)`, final review verdict and any "Notes for Natallia", PR link (if any).
 - Move the issue to In Review. If that status does not exist — leave it In Progress and tell me.
 - Never move the issue to Done: that is my responsibility after review.
