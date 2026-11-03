@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [tsconfigPaths()],
   resolve: {
     alias: {
-      // server-only бросает ошибку вне React Server-окружения; в тестах подменяем пустым модулем
+      // server-only throws outside React Server context; stub it out in tests
       'server-only': new URL('./test/server-only-stub.ts', import.meta.url).pathname,
     },
   },
