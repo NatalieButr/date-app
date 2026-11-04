@@ -1,10 +1,14 @@
 // runs with: tsx --conditions=react-server scripts/seed.ts [--reset]
 // Do not run without intent — uses API credits.
 
+import { z } from 'zod';
 import { createSupabaseAdminClient } from '@/shared/api/supabase/admin';
 import { structured, embed } from '@/shared/ai';
-import { SeedBatchSchema, buildEmbeddingText } from '@/entities/profile';
+import { SeedProfileSchema, buildEmbeddingText } from '@/entities/profile';
 import { upsertProfileEmbedding } from '@/entities/profile/server';
+
+// Lenient version: Claude sometimes returns fewer than 10; we accept what we get.
+const SeedBatchResponseSchema = z.object({ profiles: z.array(SeedProfileSchema).min(1) });
 
 const TOTAL = 50;
 const BATCH_SIZE = 10;
@@ -35,25 +39,31 @@ async function main() {
   for (let i = 0; i < numBatches; i++) {
     console.log(`\nGenerating batch ${i + 1}/${numBatches}...`);
 
-    const batch = await structured(
-      {
-        feature: 'seed',
-        tier: 'fast',
-        system: `You generate realistic fictional dating profiles for a demo app.
+    let batch: z.infer<typeof SeedBatchResponseSchema>;
+    try {
+      batch = await structured(
+        {
+          feature: 'seed',
+          tier: 'fast',
+          system: `You generate realistic fictional dating profiles for a demo app.
 Profiles must be diverse in age (18-45), gender (man/woman/non-binary), US city, interests, and personality.
 Each batch must contain exactly 10 unique profiles. Make each person feel real and relatable.
 <instruction>Return only the structured JSON — no commentary.</instruction>`,
-        messages: [
-          {
-            role: 'user',
-            content: `<request>Generate batch ${i + 1} of ${numBatches}. Each batch should cover different demographics and interests.</request>`,
-          },
-        ],
-        maxTokens: 4000,
-        promptVer: 'seed@1',
-      },
-      SeedBatchSchema,
-    );
+          messages: [
+            {
+              role: 'user',
+              content: `<request>Generate batch ${i + 1} of ${numBatches}. Each batch should cover different demographics and interests.</request>`,
+            },
+          ],
+          maxTokens: 4000,
+          promptVer: 'seed@1',
+        },
+        SeedBatchResponseSchema,
+      );
+    } catch (err) {
+      console.error(`  Batch ${i + 1} generation failed: ${err instanceof Error ? err.message : String(err)}`);
+      continue;
+    }
 
     for (const profile of batch.profiles) {
       const email = `seed-${crypto.randomUUID()}@spark-demo.test`;
