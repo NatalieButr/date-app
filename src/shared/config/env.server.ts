@@ -19,8 +19,8 @@ const ServerEnvSchema = z.object({
         .map((email) => email.trim().toLowerCase())
         .filter(Boolean),
     ),
-  DEMO_USER_EMAIL: z.email().optional(),
-  DEMO_USER_PASSWORD: z.string().optional(),
+  DEMO_USER_EMAIL: z.string().transform((v) => v || undefined).pipe(z.string().email().optional()),
+  DEMO_USER_PASSWORD: z.string().transform((v) => v || undefined).pipe(z.string().optional()),
 });
 
 export type ServerEnv = z.infer<typeof ServerEnvSchema>;

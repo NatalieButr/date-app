@@ -18,9 +18,9 @@
     "test:e2e:ui": "playwright test --ui",
     "check": "npm run typecheck && npm run lint && npm run lint:fsd && npm run test",
     "db:types": "supabase gen types typescript --remote=$SUPABASE_PROJECT_REF > src/shared/api/supabase/database.types.ts",
-    "seed": "tsx --conditions=react-server scripts/seed.ts",
-    "embed-all": "tsx --conditions=react-server scripts/embed-all.ts",
-    "eval": "tsx --conditions=react-server evals/run.ts"
+    "seed": "node --env-file=.env.local --conditions=react-server --import tsx scripts/seed.ts",
+    "embed-all": "node --env-file=.env.local --conditions=react-server --import tsx scripts/embed-all.ts",
+    "eval": "node --env-file=.env.local --conditions=react-server --import tsx evals/run.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.4.0",
