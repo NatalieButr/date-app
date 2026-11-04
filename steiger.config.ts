@@ -20,6 +20,28 @@ export default defineConfig([
     },
   },
   {
+    // All consumers of shared use file-level imports per SPEC §4.3.
+    // no-public-api-sidestep would otherwise fire on every @/shared/api/…,
+    // @/shared/config/… and @/shared/ui/… import, which is the intended pattern.
+    rules: {
+      'fsd/no-public-api-sidestep': 'off',
+    },
+  },
+  {
+    // These three slices each have one reference today but will gain more as
+    // the app grows (viewer → feeds/matches/wingman, auth-by-email → settings,
+    // app-shell → every authenticated page). Scoped to these paths only so
+    // future single-reference slices still surface as warnings.
+    files: [
+      'src/entities/viewer/**',
+      'src/features/auth-by-email/**',
+      'src/widgets/app-shell/**',
+    ],
+    rules: {
+      'fsd/insignificant-slice': 'off',
+    },
+  },
+  {
     // _app/providers is the FSD-recommended convention for Next.js global providers.
     files: ['src/_app/**'],
     rules: {
