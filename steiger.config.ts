@@ -34,6 +34,7 @@ export default defineConfig([
     // future single-reference slices still surface as warnings.
     files: [
       'src/entities/viewer/**',
+      'src/entities/profile/**',
       'src/features/auth-by-email/**',
       'src/widgets/app-shell/**',
     ],
