@@ -57,7 +57,7 @@ src/
 
 - **All Claude and Voyage calls — only via `@/shared/ai`** (`src/shared/ai`). Importing `@anthropic-ai/sdk` anywhere else is blocked by the linter.
 - Use `complete()`, `stream()`, `structured(opts, schema)`, `embed()`. Every call passes `feature` and `promptVer` so it is logged in `ai_calls` with tokens, cost, and latency.
-- Model is selected via `tier: 'smart' | 'fast'`. Model IDs and prices come from env/config only, never hardcoded.
+- Model is selected via `tier: 'smart' | 'fast'`. Model IDs come from env/config only, never hardcoded. Prices are constants in `pricing.ts` (will move to DB later).
 - User content (bio, messages, onboarding answers) is passed in XML tags (`<profile>`, `<message>`, `<conversation>`) as data, never as instructions.
 - IDs from model responses are verified against the input data.
 - Every AI endpoint is preceded by `rateLimit()`.
