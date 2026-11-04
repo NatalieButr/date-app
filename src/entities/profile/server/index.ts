@@ -27,6 +27,8 @@ export async function searchProfilesByVector(
   return (data ?? []).map((row: unknown) => PublicProfileSchema.parse(row));
 }
 
+// TODO(spec): uses admin client (bypasses RLS). T-06 feed endpoint should use the
+// RLS server client instead so users cannot fetch arbitrary profiles directly.
 export async function getProfile(id: string): Promise<ProfileRow | null> {
   const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase.from('profiles').select('*').eq('id', id).single();

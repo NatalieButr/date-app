@@ -2,7 +2,7 @@
 // Do not run without intent — uses API credits.
 
 import { createSupabaseAdminClient } from '@/shared/api/supabase/admin';
-import { structured } from '@/shared/ai';
+import { structured, embed } from '@/shared/ai';
 import { SeedBatchSchema, buildEmbeddingText } from '@/entities/profile';
 import { upsertProfileEmbedding } from '@/entities/profile/server';
 
@@ -98,7 +98,6 @@ Each batch must contain exactly 10 unique profiles. Make each person feel real a
       // Embed immediately after insert
       const embeddingText = buildEmbeddingText(profile);
       try {
-        const { embed } = await import('@/shared/ai');
         const [vec] = await embed([embeddingText], 'document', { feature: 'seed' });
         if (vec) await upsertProfileEmbedding(id, vec);
       } catch (err) {
