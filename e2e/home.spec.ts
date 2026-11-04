@@ -1,14 +1,15 @@
 import { expect, test } from '@playwright/test';
 
-test.describe('Главная', () => {
-  test('открывается и показывает название', async ({ page }) => {
+test.describe('Home page', () => {
+  test('renders title and CTA', async ({ page }) => {
     await page.goto('/');
 
     await expect(page).toHaveTitle(/Spark/);
     await expect(page.getByRole('heading', { level: 1, name: 'Spark' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Get started' })).toBeVisible();
   });
 
-  test('нет горизонтального скролла', async ({ page }) => {
+  test('no horizontal scroll', async ({ page }) => {
     await page.goto('/');
 
     const overflow = await page.evaluate(
@@ -17,7 +18,7 @@ test.describe('Главная', () => {
     expect(overflow).toBeLessThanOrEqual(0);
   });
 
-  test('нет ошибок в консоли', async ({ page }) => {
+  test('no console errors', async ({ page }) => {
     const errors: string[] = [];
     page.on('console', (message) => {
       if (message.type() === 'error') errors.push(message.text());
