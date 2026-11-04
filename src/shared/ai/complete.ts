@@ -26,8 +26,6 @@ export interface CallOptions {
   tools?: Tool[];
   toolChoice?: ToolChoice;
   maxTokens: number;
-  // TODO(spec): temperature not in SDK 1.4.0 — remove from CallOptions if unused, or update when SDK adds it back
-  temperature?: number;
   promptVer: string;
   userId?: string;
   allowFallback?: boolean;
