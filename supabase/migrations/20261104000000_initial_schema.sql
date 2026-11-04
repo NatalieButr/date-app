@@ -69,7 +69,7 @@ create table match_explanations (
 
 create table ai_calls (
   id                 uuid primary key default gen_random_uuid(),
-  user_id            uuid,
+  user_id            uuid references auth.users(id) on delete set null,
   feature            text not null,
   model              text not null,
   prompt_ver         text,
@@ -95,16 +95,22 @@ alter table messages enable row level security;
 alter table match_explanations enable row level security;
 alter table ai_calls enable row level security;
 
--- profiles: authenticated users can read; owner can update
-create policy "profiles: authenticated read"
+-- profiles: owner can read their own full row; public data via public_profiles view.
+-- The public_profiles view is SECURITY DEFINER (runs as postgres / view owner) so it
+-- can read all onboarded profiles regardless of this policy.
+-- Server code that needs another user's full profile must use the admin client.
+create policy "profiles: owner read"
   on profiles for select
   to authenticated
-  using (true);
+  using (auth.uid() = id);
 
 create policy "profiles: owner update"
   on profiles for update
   to authenticated
   using (auth.uid() = id);
+
+-- Allow authenticated users to query the public_profiles view.
+grant select on public_profiles to authenticated;
 
 -- swipes: row-level access only via RPC (no direct insert policy needed —
 -- record_swipe runs as SECURITY DEFINER and handles inserts)
@@ -193,21 +199,39 @@ begin
 end;
 $$;
 
--- match_candidates: ANN search over public profiles, excluding already-swiped targets
+-- match_candidates: ANN search over public profiles, excluding already-swiped targets.
+-- viewer must equal auth.uid() (unless called by service role, e.g. seed script).
 create or replace function match_candidates(viewer uuid, k int)
   returns setof public_profiles
-  language sql
+  language plpgsql
   stable
   security definer
   set search_path = public
 as $$
-  select p.id, p.name, p.age, p.gender, p.city, p.bio, p.interests, p.values, p.seeking, p.avatar_url
-  from profiles p
-  where p.onboarded_at is not null
-    and p.id <> viewer
-    and not exists (
-      select 1 from swipes s where s.swiper_id = viewer and s.target_id = p.id
-    )
-  order by p.embedding <=> (select embedding from profiles where id = viewer)
-  limit k;
+declare
+  v_embedding vector(1024);
+begin
+  -- Enforce caller identity; service role (auth.uid() = null) may pass any viewer.
+  if auth.uid() is not null and viewer <> auth.uid() then
+    raise exception 'unauthorized: viewer must match the authenticated user';
+  end if;
+
+  -- Skip ANN search when the viewer has no embedding yet.
+  select embedding into v_embedding from profiles where id = viewer;
+  if v_embedding is null then
+    return;
+  end if;
+
+  return query
+    select p.id, p.name, p.age, p.gender, p.city, p.bio, p.interests, p.values, p.seeking, p.avatar_url
+    from profiles p
+    where p.onboarded_at is not null
+      and p.id <> viewer
+      and p.embedding is not null
+      and not exists (
+        select 1 from swipes s where s.swiper_id = viewer and s.target_id = p.id
+      )
+    order by p.embedding <=> v_embedding
+    limit k;
+end;
 $$;

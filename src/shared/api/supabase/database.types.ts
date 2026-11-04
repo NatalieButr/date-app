@@ -367,7 +367,7 @@ export type Database = {
         };
         Returns: {
           matched: boolean;
-          match_id: string;
+          match_id: string | null;
         }[];
       };
     };
