@@ -141,7 +141,8 @@ Tasks live in Jira, accessed via the `atlassian` MCP server (`.mcp.json`).
 
 - `/jira-setup <KEY>` — create tasks from SPEC §14 once (zone H tasks split into `-a` agent and `-b` Natallia).
 - `/next-task [KEY-N]` — pick the next task with label `agent`, plan → "ok" → code → `npm run check` → commit to branch → comment in Jira.
-- Statuses: To Do → In Progress (agent, after "ok") → In Review (agent, after commit) → Done (Natallia only).
+- Statuses: To Do → In Progress (agent, after "ok") → In Review (agent, after commit) → Done (agent, automatically when the PR is merged into `main`).
+- At the start of every `/next-task` run the agent checks all "In Review" issues: if the linked PR is merged → transitions the issue to Done before picking the next task.
 - Tasks with label `human` are not executed by the agent.
 - Deleting tasks and comments in Jira is forbidden.
 

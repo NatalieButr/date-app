@@ -5,6 +5,15 @@ argument-hint: [Jira issue key, e.g. KAN-7]
 
 Work with Jira via the `atlassian` MCP server.
 
+## 0. Close merged PRs
+
+Before picking a new task, check whether any previously opened PRs have been merged into `main` and close out their Jira issues:
+
+- Search for issues with label `agent` and status `In Review` via `searchJiraIssuesUsingJql`: `labels = agent AND status = "In Review"`.
+- For each issue found, look for a GitHub PR URL in its comments (the agent always posts one). Run `gh pr view <number> --json mergedAt,state` to check if it has been merged into `main`.
+- If the PR is merged (`mergedAt` is not null and `state` is `MERGED`) → transition the issue to Done via `transitionJiraIssue`.
+- If none are merged, continue.
+
 ## 1. Pick a task
 
 - If a key was passed (`$ARGUMENTS`) — fetch that issue via `getJiraIssue`.
@@ -33,4 +42,4 @@ Work with Jira via the `atlassian` MCP server.
 
 - Add a comment via `addOrEditJiraIssueComment`: what was done, changed slices, new public API exports, remaining `TODO(human)` and `TODO(spec)`, final review verdict and any "Notes for Natallia", PR link (if any).
 - Move the issue to In Review. If that status does not exist — leave it In Progress and tell me.
-- Never move the issue to Done: that is my responsibility after review.
+- Do not move the issue to Done manually. It will be moved to Done automatically at the start of the next `/next-task` run once the PR is merged into `main` (see step 0).
