@@ -1,4 +1,5 @@
 export { buildEmbeddingText } from './lib/buildEmbeddingText';
+export { ProfileCard } from './ui/ProfileCard';
 export {
   ProfileRowSchema,
   PublicProfileSchema,

@@ -1,7 +1,10 @@
 import { Suspense } from 'react';
 
 import { AppShell } from '@/widgets/app-shell';
+import { SwipeDeck } from '@/widgets/swipe-deck';
 import { Skeleton } from '@/shared/ui/skeleton';
+import { requireViewer } from '@/entities/viewer/server';
+import { getFeed } from '@/features/rank-feed/server';
 
 function FeedSkeleton() {
   return (
@@ -15,21 +18,20 @@ function FeedSkeleton() {
   );
 }
 
-function FeedEmpty() {
-  return (
-    <div className="flex flex-col items-center justify-center py-20 text-center">
-      <p className="text-muted-foreground text-sm">No more profiles for now — check back later.</p>
-    </div>
-  );
+async function FeedContent() {
+  const viewer = await requireViewer();
+  const profiles = await getFeed(viewer.id, 20);
+  return <SwipeDeck initialProfiles={profiles} />;
 }
 
-// TODO(T-06): replace with real swipe deck
 export function FeedPage() {
   return (
     <AppShell>
-      <Suspense fallback={<FeedSkeleton />}>
-        <FeedEmpty />
-      </Suspense>
+      <div className="px-4 py-6">
+        <Suspense fallback={<FeedSkeleton />}>
+          <FeedContent />
+        </Suspense>
+      </div>
     </AppShell>
   );
 }
