@@ -21,9 +21,12 @@ Rules:
 - Infer, don't invent — only extract what the conversation actually supports.
 - summary must be embeddable: dense with concrete facts, no filler adjectives.`;
 
-export async function extractProfileFromChat(messages: ChatMessage[]): Promise<ProfileExtract> {
+export async function extractProfileFromChat(
+  messages: ChatMessage[],
+  userName = 'User',
+): Promise<ProfileExtract> {
   const conversation = messages
-    .map((m) => `${m.role === 'user' ? 'User' : 'Spark'}: ${m.content}`)
+    .map((m) => `${m.role === 'user' ? userName : 'Spark'}: ${m.content}`)
     .join('\n');
 
   return structured(

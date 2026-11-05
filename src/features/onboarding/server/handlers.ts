@@ -71,7 +71,7 @@ export async function extractProfilePOST(req: NextRequest): Promise<NextResponse
   if (!parsed.success) return badRequest('validation_error', parsed.error.issues[0]?.message ?? 'Invalid request');
 
   try {
-    const result = await extractProfileFromChat(parsed.data.messages);
+    const result = await extractProfileFromChat(parsed.data.messages, parsed.data.basicInfo?.name);
     return NextResponse.json(result);
   } catch (err) {
     if (err instanceof Error && err.message.startsWith('TODO(human)')) {
