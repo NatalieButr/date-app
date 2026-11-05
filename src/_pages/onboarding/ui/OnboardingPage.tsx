@@ -37,7 +37,7 @@ export function OnboardingPage() {
       setError(err instanceof Error ? err.message : 'Failed to analyze your answers. Please try again.');
       goToStep(2);
     }
-  }, [goToStep, setExtracted, setBioOptions, setError]);
+  }, [goToStep, setExtracted, setBioOptions, setError, state.basicInfo]);
 
   const handleSave = useCallback(async () => {
     if (!state.basicInfo || !state.extracted || !state.chosenBio) return;

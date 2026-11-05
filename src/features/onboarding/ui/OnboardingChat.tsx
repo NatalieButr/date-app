@@ -65,7 +65,7 @@ export function OnboardingChat({ messages, onMessagesChange, onDone, basicInfo, 
   }
 
   const userMsgCount = messages.filter((m) => m.role === 'user').length;
-  const canFinish = userMsgCount >= 4 && !streaming;
+  const canFinish = userMsgCount >= 6 && !streaming;
 
   return (
     <div className="flex flex-col gap-4">
