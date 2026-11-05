@@ -35,8 +35,12 @@ export default defineConfig([
     files: [
       'src/entities/viewer/**',
       'src/entities/profile/**',
+      'src/entities/match/**',
       'src/features/auth-by-email/**',
+      'src/features/swipe-profile/**',
+      'src/features/rank-feed/**',
       'src/widgets/app-shell/**',
+      'src/widgets/swipe-deck/**',
     ],
     rules: {
       'fsd/insignificant-slice': 'off',
