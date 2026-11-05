@@ -54,7 +54,7 @@ export async function getFeed(viewerId: string, limit = 10): Promise<PublicProfi
       .single();
 
     if (!viewerRow) {
-      // Authenticated viewer has no public profile — onboarding incomplete; skip rerank.
+      // Authenticated viewer has no public profile — onboarding incomplete; abort request.
       throw new Error(`getFeed: viewer ${viewerId} has no public profile`);
     }
 
