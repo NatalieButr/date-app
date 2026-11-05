@@ -37,6 +37,7 @@ export default defineConfig([
       'src/entities/profile/**',
       'src/entities/match/**',
       'src/features/auth-by-email/**',
+      'src/features/onboarding/**',
       'src/features/swipe-profile/**',
       'src/features/rank-feed/**',
       'src/widgets/app-shell/**',
