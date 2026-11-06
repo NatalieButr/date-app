@@ -19,15 +19,20 @@ async function fetchCoachSuggestions(matchId: string): Promise<string> {
   const decoder = new TextDecoder();
   let fullText = '';
 
-  while (true) {
+  let streamDone = false;
+  while (!streamDone) {
     const { done, value } = await reader.read();
     if (done) break;
     const chunk = decoder.decode(value, { stream: true });
     for (const line of chunk.split('\n')) {
       if (!line.startsWith('data: ')) continue;
       const payload = line.slice(6).trim();
-      if (payload === '[DONE]') break;
+      if (payload === '[DONE]') {
+        streamDone = true;
+        break;
+      }
       try {
+        // JSON.parse returns unknown; Zod would be heavier than needed here
         const event = JSON.parse(payload) as {
           type: string;
           delta?: { type: string; text?: string };

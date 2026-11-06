@@ -7,8 +7,9 @@ import { PublicProfileSchema } from '@/entities/profile';
 import { getProfile } from '@/entities/profile/server';
 import { requireViewer } from '@/entities/viewer/server';
 import { rateLimit, RateLimitError, stream } from '@/shared/ai';
-import { forbidden, rateLimited, unauthorized } from '@/shared/lib/http';
+import { badRequest, forbidden, rateLimited, unauthorized } from '@/shared/lib/http';
 
+import { IcebreakersBodySchema } from '../model/schemas';
 import { buildIcebreakerSystem } from './buildSystem';
 import { getIcebreakerUserPrompt, ICEBREAKER_PROMPT_VERSION } from './prompts';
 
@@ -19,6 +20,9 @@ const SSE_HEADERS = {
 };
 
 export async function icebreakersPOST(req: NextRequest, matchId: string): Promise<Response> {
+  const body = IcebreakersBodySchema.safeParse(await req.json().catch(() => ({})));
+  if (!body.success) return badRequest('invalid_body', body.error.message);
+
   let viewer;
   try {
     viewer = await requireViewer();
