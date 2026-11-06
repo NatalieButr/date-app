@@ -72,6 +72,24 @@ export async function createMessage(
   return MessageRowSchema.parse(data);
 }
 
+/** Atomically inserts a warning and returns the user's total warning count. */
+export async function insertWarningAndCount(
+  userId: string,
+  matchId: string,
+  messageId: string | null,
+  reason: string,
+): Promise<number> {
+  const admin = createSupabaseAdminClient();
+  const { data, error } = await admin.rpc('insert_warning_and_count', {
+    p_user_id: userId,
+    p_match_id: matchId,
+    p_message_id: messageId ?? undefined,
+    p_reason: reason,
+  });
+  if (error) throw new Error(`insertWarningAndCount failed: ${error.message}`);
+  return data ?? 0;
+}
+
 export async function listMessagesGET(req: NextRequest, matchId: string) {
   let viewer;
   try {

@@ -231,7 +231,7 @@ src/features/onboarding/
 | `entities/viewer` | entities | Сессия, текущий профиль, `requireViewer()`, `isOnboarded()`, `isAdmin()` | T-04 |
 | `entities/profile` | entities | Тип `Profile`/`PublicProfile`, `ProfileCard`, `getProfile`, `searchProfilesByVector`, `buildEmbeddingText`, `upsertProfileEmbedding` | F1, F3 / T-05, T-06 |
 | `entities/match` | entities | Тип, `getMyMatches`, `getMatchForViewer`, `MatchListItem` | F3, F5 / T-06 |
-| `entities/message` | entities | Тип, `MessageBubble`, `listMessages`, `subscribeToMatch`, `moderateMessage`, `createMessage` | F5, F7 / T-09, T-10 |
+| `entities/message` | entities | Тип, `MessageBubble`, `listMessages`, `subscribeToMatch`, `moderateMessage`, `createMessage`, `insertWarningAndCount` | F5, F7 / T-09, T-10 |
 | `entities/ai-call` | entities | Тип, агрегаты метрик для `/admin` | F9 / T-13 |
 | `features/auth-by-email` | features | Форма входа/регистрации | T-04 |
 | `features/demo-login` | features | Кнопка и эндпоинт входа под демо | T-15 |
@@ -319,6 +319,18 @@ create table match_explanations (
   created_at  timestamptz not null default now(),
   primary key (viewer_id, target_id)
 );
+
+create table user_warnings (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid not null references profiles on delete cascade,
+  match_id    uuid not null references matches on delete cascade,
+  message_id  uuid references messages on delete set null,
+  reason      text not null,
+  created_at  timestamptz not null default now()
+);
+create index on user_warnings (user_id, created_at);
+-- Only admin client. No user-visible RLS policy.
+alter table user_warnings enable row level security;
 
 create table ai_calls (
   id                 uuid primary key default gen_random_uuid(),
@@ -502,6 +514,8 @@ export const ModerationSchema = z.object({
 ```
 
 - `block` — не сохраняется, API возвращает 422 с причиной; `warn` — сохраняется с пометкой, отправитель видит предупреждение. Ошибка модели → `warn` + запись ошибки (fail-open, фиксируется в README).
+- При `warn` создаётся запись в `user_warnings` (admin-клиент). Если у пользователя ≥ 5 записей — `POST /api/chat/[matchId]/messages` возвращает 422 `user_blocked_repeated_warnings`. Сообщение при этом уже сохранено.
+- `moderateMessage` принимает текущее сообщение и последние 20 сообщений диалога для контекста (отличие скама от юмора).
 - Текст передаётся в `<message>` с инструкцией не исполнять содержимое.
 - **DoD:** проходит evals модерации (F10); добавляет < 1,5 с (p50).
 
