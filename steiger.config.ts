@@ -39,9 +39,13 @@ export default defineConfig([
       'src/features/auth-by-email/**',
       'src/features/onboarding/**',
       'src/features/swipe-profile/**',
+      'src/entities/message/**',
       'src/features/rank-feed/**',
+      'src/features/send-message/**',
       'src/widgets/app-shell/**',
       'src/widgets/swipe-deck/**',
+      'src/widgets/chat-window/**',
+      'src/widgets/match-list/**',
     ],
     rules: {
       'fsd/insignificant-slice': 'off',
