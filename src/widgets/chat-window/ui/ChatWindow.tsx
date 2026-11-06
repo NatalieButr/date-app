@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { MessageBubble, subscribeToMatch, type Message } from '@/entities/message';
+import { CoachButton } from '@/features/chat-coach';
+import { IcebreakersButton } from '@/features/icebreakers';
 import { SendMessageForm } from '@/features/send-message';
 import { Skeleton } from '@/shared/ui/skeleton';
 
@@ -14,7 +16,13 @@ interface Props {
   supabaseKey: string;
 }
 
-export function ChatWindow({ matchId, viewerId, initialMessages, supabaseUrl, supabaseKey }: Props) {
+export function ChatWindow({
+  matchId,
+  viewerId,
+  initialMessages,
+  supabaseUrl,
+  supabaseKey,
+}: Props) {
   const [messages, setMessages] = useState<Message[]>(() =>
     [...initialMessages].sort(
       (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
@@ -43,9 +51,7 @@ export function ChatWindow({ matchId, viewerId, initialMessages, supabaseUrl, su
     if (!oldest || loading) return;
     setLoading(true);
     try {
-      const res = await fetch(
-        `/api/chat/${matchId}/messages?before=${oldest.id}&limit=50`,
-      );
+      const res = await fetch(`/api/chat/${matchId}/messages?before=${oldest.id}&limit=50`);
       if (!res.ok) return;
       const data = (await res.json()) as { messages: Message[] };
       const older = (data.messages ?? []).sort(
@@ -57,6 +63,10 @@ export function ChatWindow({ matchId, viewerId, initialMessages, supabaseUrl, su
       setLoading(false);
     }
   }
+
+  const hasSentMessage = messages.some((m) => m.sender_id === viewerId);
+
+  const [inputValue, setInputValue] = useState('');
 
   function handleOptimistic(body: string) {
     const optimistic: Message = {
@@ -100,8 +110,15 @@ export function ChatWindow({ matchId, viewerId, initialMessages, supabaseUrl, su
         )}
         <div ref={bottomRef} />
       </div>
-      <div className="border-t px-4 py-3">
-        <SendMessageForm matchId={matchId} onOptimistic={handleOptimistic} />
+      <div className="border-t px-4 py-3 flex flex-col gap-2">
+        {!hasSentMessage && <IcebreakersButton matchId={matchId} onSelect={setInputValue} />}
+        {hasSentMessage && <CoachButton matchId={matchId} />}
+        <SendMessageForm
+          matchId={matchId}
+          onOptimistic={handleOptimistic}
+          value={inputValue}
+          onValueChange={setInputValue}
+        />
       </div>
     </div>
   );
