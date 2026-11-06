@@ -2,7 +2,7 @@
 
 import type { PublicProfile } from '@/entities/profile';
 
-export const rerankPromptVersion = 'rerank@1';
+export const version = 'rerank@1';
 
 export function buildRerankPrompt(viewer: PublicProfile, candidates: PublicProfile[]): { system: string; user: string } {
   const system = `You are a compatibility ranker for a dating app. Your job is to sort candidate profiles by how well they match the viewer.
@@ -25,14 +25,13 @@ Return ONLY a JSON object with key "ranked_ids": an array of all candidate IDs i
 
   const candidatesXml = candidates
     .map(
-      (c) => `<candidate>
-  <id>${c.id}</id>
+      (c) => `<profile id="${c.id}">
   <age>${c.age}</age>
   <city>${c.city}</city>
   <interests>${c.interests.join(', ')}</interests>
   <values>${c.values.join(', ')}</values>
   <seeking>${c.seeking ?? ''}</seeking>
-</candidate>`,
+</profile>`,
     )
     .join('\n');
 

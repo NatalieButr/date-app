@@ -11,7 +11,7 @@ import { rateLimit, RateLimitError } from '@/shared/ai';
 
 import { FeedQuerySchema } from '../model/schemas';
 import { rerankCandidates } from './rerank';
-import { rerankPromptVersion } from './prompts';
+import { version as rerankPromptVersion } from './prompts';
 
 export async function getFeed(viewerId: string, limit = 10): Promise<PublicProfile[]> {
   const supabase = await createSupabaseServerClient();

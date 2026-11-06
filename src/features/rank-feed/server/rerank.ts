@@ -3,7 +3,7 @@ import 'server-only';
 import { z } from 'zod';
 import type { PublicProfile } from '@/entities/profile';
 import { structured } from '@/shared/ai';
-import { buildRerankPrompt, rerankPromptVersion } from './prompts';
+import { buildRerankPrompt, version as rerankPromptVersion } from './prompts';
 
 export interface RerankResult {
   id: string;
