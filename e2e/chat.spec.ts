@@ -16,3 +16,19 @@ test.describe('Chat page (unauthenticated)', () => {
     await expect(page).toHaveURL(/\/login/);
   });
 });
+
+const TEST_MATCH_ID = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+
+test.describe('Icebreakers API (unauthenticated)', () => {
+  test('returns 401 for unauthenticated POST', async ({ request }) => {
+    const res = await request.post(`/api/chat/${TEST_MATCH_ID}/icebreakers`);
+    expect(res.status()).toBe(401);
+  });
+});
+
+test.describe('Coach API (unauthenticated)', () => {
+  test('returns 401 for unauthenticated POST', async ({ request }) => {
+    const res = await request.post(`/api/chat/${TEST_MATCH_ID}/coach`);
+    expect(res.status()).toBe(401);
+  });
+});

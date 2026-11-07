@@ -8,13 +8,32 @@ import { Textarea } from '@/shared/ui/textarea';
 interface Props {
   matchId: string;
   onOptimistic?: (body: string) => void;
+  /** When provided, the input becomes controlled by the parent. */
+  value?: string;
+  onValueChange?: (v: string) => void;
 }
 
-export function SendMessageForm({ matchId, onOptimistic }: Props) {
-  const [value, setValue] = useState('');
+export function SendMessageForm({
+  matchId,
+  onOptimistic,
+  value: externalValue,
+  onValueChange,
+}: Props) {
+  const [internalValue, setInternalValue] = useState('');
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const isControlled = externalValue !== undefined;
+  const value = isControlled ? externalValue : internalValue;
+
+  function setValue(v: string) {
+    if (isControlled) {
+      onValueChange?.(v);
+    } else {
+      setInternalValue(v);
+    }
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();

@@ -1,5 +1,5 @@
-import { defineConfig } from 'steiger'
-import fsd from '@feature-sliced/steiger-plugin'
+import { defineConfig } from 'steiger';
+import fsd from '@feature-sliced/steiger-plugin';
 
 export default defineConfig([
   ...fsd.configs.recommended,
@@ -42,6 +42,8 @@ export default defineConfig([
       'src/entities/message/**',
       'src/features/rank-feed/**',
       'src/features/send-message/**',
+      'src/features/icebreakers/**',
+      'src/features/chat-coach/**',
       'src/widgets/app-shell/**',
       'src/widgets/swipe-deck/**',
       'src/widgets/chat-window/**',
@@ -58,4 +60,4 @@ export default defineConfig([
       'fsd/segments-by-purpose': 'off',
     },
   },
-])
+]);
