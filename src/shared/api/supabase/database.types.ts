@@ -281,7 +281,26 @@ isOneToOne: false
 { Args: { "dir": string,"target": string }; Returns: {
               "match_id": string,"matched": boolean
             }[]
-                           }
+                           },
+"search_profiles_by_embedding":
+{ Args: { "query_embedding": string,"exclude_id": string,"k": number,"filter_city"?: string | null }; Returns: {
+              "age": number,
+"avatar_url": string | null,
+"bio": string | null,
+"city": string,
+"gender": string,
+"id": string,
+"interests": (string)[],
+"name": string,
+"seeking": string | null,
+"values": (string)[]
+            }[]
+                          SetofOptions: {
+        from: "*"
+        to: "public_profiles"
+        isOneToOne: false
+        isSetofReturn: true
+      } }
           }
           Enums: {
             [_ in never]: never

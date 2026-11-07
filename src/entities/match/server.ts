@@ -1,4 +1,4 @@
 import 'server-only';
 
-export { getMyMatches, getMatchForViewer } from './server/index';
+export { getMyMatches, getMatchForViewer, getMatchByTarget } from './server/index';
 export type { Match, MatchRow } from './model/schemas';

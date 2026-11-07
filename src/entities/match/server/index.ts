@@ -23,7 +23,30 @@ export async function getMyMatches(viewerId: string): Promise<Match[]> {
   });
 }
 
-export async function getMatchForViewer(matchId: string, viewerId: string): Promise<MatchRow | null> {
+export async function getMatchByTarget(
+  viewerId: string,
+  targetId: string,
+): Promise<MatchRow | null> {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from('matches')
+    .select('*')
+    .or(
+      `and(user_a.eq.${viewerId},user_b.eq.${targetId}),and(user_a.eq.${targetId},user_b.eq.${viewerId})`,
+    )
+    .single();
+
+  if (error) {
+    if (error.code === 'PGRST116') return null;
+    throw new Error(`getMatchByTarget failed: ${error.message}`);
+  }
+  return MatchRowSchema.parse(data);
+}
+
+export async function getMatchForViewer(
+  matchId: string,
+  viewerId: string,
+): Promise<MatchRow | null> {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from('matches')

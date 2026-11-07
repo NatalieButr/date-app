@@ -44,6 +44,8 @@ export default defineConfig([
       'src/features/send-message/**',
       'src/features/icebreakers/**',
       'src/features/chat-coach/**',
+      'src/features/wingman/**',
+      'src/widgets/wingman-panel/**',
       'src/widgets/app-shell/**',
       'src/widgets/swipe-deck/**',
       'src/widgets/chat-window/**',
