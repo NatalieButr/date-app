@@ -3,12 +3,8 @@ import 'server-only';
 // H-zone: prompt text lives here — Natallia writes this.
 
 /** Bump to invalidate cached system blocks. */
-export const ICEBREAKER_PROMPT_VERSION = '0.0.0';
+export const ICEBREAKER_PROMPT_VERSION = '1.0.0';
 
-/**
- * User-turn message asking the model to generate icebreakers.
- * H-zone: write the actual prompt text.
- */
 export function getIcebreakerUserPrompt(): string {
-  throw new Error('TODO(human): write the icebreaker user-turn prompt text');
+  return 'Generate 3 icebreaker messages I could send to start the conversation.';
 }
