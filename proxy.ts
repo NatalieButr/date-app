@@ -8,6 +8,8 @@ import type { Database } from '@/shared/api/supabase/database.types';
 const PUBLIC_PATHS = ['/', '/login'];
 
 function isPublicPath(pathname: string): boolean {
+  // API routes handle their own auth — do not redirect, let them return 401/403
+  if (pathname.startsWith('/api/')) return true;
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'));
 }
 
