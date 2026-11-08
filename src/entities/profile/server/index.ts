@@ -1,7 +1,13 @@
 import 'server-only';
 
+import { embed } from '@/shared/ai';
 import { createSupabaseAdminClient } from '@/shared/api/supabase/admin';
-import { PublicProfileSchema, ProfileRowSchema, type PublicProfile, type ProfileRow } from '../model/schemas';
+import {
+  PublicProfileSchema,
+  ProfileRowSchema,
+  type PublicProfile,
+  type ProfileRow,
+} from '../model/schemas';
 
 export async function upsertProfileEmbedding(id: string, embedding: number[]): Promise<void> {
   const supabase = createSupabaseAdminClient();
@@ -24,6 +30,28 @@ export async function searchProfilesByVector(
     k: limit,
   });
   if (error) throw new Error(`searchProfilesByVector failed: ${error.message}`);
+  return (data ?? []).map((row: unknown) => PublicProfileSchema.parse(row));
+}
+
+export async function searchProfilesByQuery(
+  viewerId: string,
+  query: string,
+  limit: number,
+  city?: string,
+): Promise<PublicProfile[]> {
+  const embeddings = await embed([query], 'query', { feature: 'wingman', userId: viewerId });
+  const queryEmbedding = embeddings[0];
+  if (!queryEmbedding) throw new Error('searchProfilesByQuery: embedding failed');
+  const supabase = createSupabaseAdminClient();
+  const embeddingStr = `[${queryEmbedding.join(',')}]`;
+
+  const { data, error } = await supabase.rpc('search_profiles_by_embedding', {
+    query_embedding: embeddingStr,
+    exclude_id: viewerId,
+    k: limit,
+    filter_city: city ?? null,
+  });
+  if (error) throw new Error(`searchProfilesByQuery failed: ${error.message}`);
   return (data ?? []).map((row: unknown) => PublicProfileSchema.parse(row));
 }
 
