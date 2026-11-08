@@ -236,7 +236,7 @@ function printReport(report: EvalReport): void {
 // ── Save JSON ─────────────────────────────────────────────────────────────────
 
 function saveReport(report: EvalReport): void {
-  const dir = path.join(import.meta.dirname, 'results');
+  const dir = path.join(process.cwd(), 'evals', 'results');
   fs.mkdirSync(dir, { recursive: true });
   const filename = `${report.date}-${report.promptVer}.json`;
   const dest = path.join(dir, filename);
@@ -246,13 +246,20 @@ function saveReport(report: EvalReport): void {
 
 // ── Entry point ───────────────────────────────────────────────────────────────
 
-const allCases: EvalCase[] = [...moderationCases, ...injectionCases, ...explanationCases];
+async function main(): Promise<void> {
+  const allCases: EvalCase[] = [...moderationCases, ...injectionCases, ...explanationCases];
 
-console.log(`Running ${allCases.length} eval cases…`);
+  console.log(`Running ${allCases.length} eval cases…`);
 
-const results = await Promise.all(allCases.map(runCase));
-const report = buildReport(results);
-printReport(report);
-saveReport(report);
+  const results = await Promise.all(allCases.map(runCase));
+  const report = buildReport(results);
+  printReport(report);
+  saveReport(report);
 
-process.exit(report.failed > 0 ? 1 : 0);
+  process.exit(report.failed > 0 ? 1 : 0);
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
