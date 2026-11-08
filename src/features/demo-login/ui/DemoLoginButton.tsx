@@ -1,6 +1,6 @@
 'use client';
 
-import { useTransition } from 'react';
+import { useState, useTransition } from 'react';
 
 import { Button } from '@/shared/ui/button';
 
@@ -12,22 +12,28 @@ interface Props {
 
 export function DemoLoginButton({ className }: Props) {
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
   function handleClick() {
+    setError(null);
     startTransition(async () => {
-      await demoLogin();
+      const err = await demoLogin();
+      if (err) setError(err);
     });
   }
 
   return (
-    <Button
-      variant="outline"
-      className={className}
-      onClick={handleClick}
-      disabled={isPending}
-      type="button"
-    >
-      {isPending ? 'Signing in…' : 'Try demo'}
-    </Button>
+    <div className="flex flex-col items-center gap-1.5">
+      <Button
+        variant="outline"
+        className={className}
+        onClick={handleClick}
+        disabled={isPending}
+        type="button"
+      >
+        {isPending ? 'Signing in…' : 'Try demo'}
+      </Button>
+      {error && <p className="text-destructive text-xs">{error}</p>}
+    </div>
   );
 }

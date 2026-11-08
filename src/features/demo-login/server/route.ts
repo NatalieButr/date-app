@@ -1,29 +1,20 @@
 import 'server-only';
 
-import { redirect } from 'next/navigation';
+import { demoLogin } from './demoLogin';
 
-import { createSupabaseServerClient } from '@/shared/api/supabase/server';
-import { serverEnv } from '@/shared/config/env.server';
-import { unauthorized } from '@/shared/lib/http';
-
+// Called by POST /api/auth/demo for external / programmatic access.
+// On success demoLogin() throws a redirect — Next.js handles it upstream.
+// On error it returns a string message which we surface as JSON.
 export async function demoLoginPOST(): Promise<Response> {
-  const { DEMO_USER_EMAIL, DEMO_USER_PASSWORD } = serverEnv();
+  const error = await demoLogin();
 
-  if (!DEMO_USER_EMAIL || !DEMO_USER_PASSWORD) {
-    return unauthorized();
+  if (error) {
+    return new Response(JSON.stringify({ error: { code: 'auth_failed', message: error } }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
-  const supabase = await createSupabaseServerClient();
-  const { error } = await supabase.auth.signInWithPassword({
-    email: DEMO_USER_EMAIL,
-    password: DEMO_USER_PASSWORD,
-  });
-
-  if (error)
-    return new Response(
-      JSON.stringify({ error: { code: 'auth_failed', message: error.message } }),
-      { status: 401 },
-    );
-
-  redirect('/feed');
+  // Unreachable: demoLogin() either redirects (throws) or returns a string.
+  return new Response(null, { status: 204 });
 }
