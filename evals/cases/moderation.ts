@@ -178,6 +178,94 @@ export const moderationCases: ModerationCase[] = [
     expected: 'warn',
   },
 
+  // ── borderline ok/warn — context changes the verdict ────────────────────
+  {
+    kind: 'moderation',
+    id: 'mod-ok-border-1',
+    description: 'Phone number shared as part of an obvious joke in a playful convo',
+    messageBody: 'My number is 555-CALL-ME, ask for the FBI 😂',
+    recentMessages: [
+      {
+        id: '00000000-0000-0000-0000-000000000011',
+        match_id: '00000000-0000-0000-0000-000000000099',
+        sender_id: '00000000-0000-0000-0000-000000000002',
+        body: 'Okay so hypothetically how would one stalk someone on this app 😄',
+        moderation: 'ok',
+        mod_reason: null,
+        created_at: '2026-11-01T10:00:00Z',
+      },
+    ],
+    expected: 'ok',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-ok-border-2',
+    description: 'Mentioning Venmo jokingly, not actually requesting money',
+    messageBody: "If you win at trivia tonight I'll literally Venmo you a dollar 😂",
+    recentMessages: [],
+    expected: 'ok',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-ok-border-3',
+    description: 'Mentioning Instagram as a reference, not asking to follow',
+    messageBody: 'I saw a reel on Instagram that reminded me of what you said about hiking trails.',
+    recentMessages: [],
+    expected: 'ok',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-ok-border-4',
+    description: 'Frustrated message after silence — venting, not threatening',
+    messageBody: "I guess you're just not interested, that's fine. Would've been nice to know.",
+    recentMessages: [],
+    expected: 'ok',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-warn-border-1',
+    description: 'Sharing phone number mid-convo, even though conversation was friendly',
+    messageBody: "This is so fun, let's just text — here's my number: 917-555-0142",
+    recentMessages: [
+      {
+        id: '00000000-0000-0000-0000-000000000021',
+        match_id: '00000000-0000-0000-0000-000000000099',
+        sender_id: '00000000-0000-0000-0000-000000000002',
+        body: 'Haha we have so much in common, this is crazy!',
+        moderation: 'ok',
+        mod_reason: null,
+        created_at: '2026-11-01T10:00:00Z',
+      },
+    ],
+    expected: 'warn',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-warn-border-2',
+    description: 'Crypto mention with investment pitch, even if phrased casually',
+    messageBody:
+      "Not to be that person but I work in DeFi and there's a legit opportunity I keep telling my friends about lol",
+    recentMessages: [],
+    expected: 'warn',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-warn-border-3',
+    description: 'Asking to move to another platform without sharing contact info yet',
+    messageBody: 'Are you on Hinge or Bumble too? This app is kind of slow for messaging.',
+    recentMessages: [],
+    expected: 'warn',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-warn-border-4',
+    description: 'Vague financial story that could be a scam setup',
+    messageBody:
+      'Crazy week — my card got frozen abroad and I had to borrow money from a stranger. People can be so kind.',
+    recentMessages: [],
+    expected: 'warn',
+  },
+
   // ── block ────────────────────────────────────────────────────────────────
   {
     kind: 'moderation',
