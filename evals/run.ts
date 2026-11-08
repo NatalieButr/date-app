@@ -1,10 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-// Direct import bypasses listMessagesGET (which pulls in Next.js React context
-// via NextRequest/NextResponse and breaks the eval runner outside Next.js).
-// evals/server.ts re-export is not viable until listMessagesGET is split out.
-import { moderateMessage } from '@/entities/message/server/moderate';
+import { moderateMessage } from '@/entities/message/server';
 
 import { judgeExplanation } from './judge';
 import { explanationCases } from './cases/explanations';
