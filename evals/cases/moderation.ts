@@ -1,16 +1,11 @@
 import type { ModerationCase } from '../types';
 
-// TODO(human): expand to ~30 cases covering:
-//   - ok: normal greetings, friendly small talk, compliments
-//   - warn: payment requests, contact info sharing, scam patterns, mild harassment
-//   - block: credible threats of violence, CSAM, extreme hate speech
-// See SPEC §F10 for the full case breakdown.
-
 export const moderationCases: ModerationCase[] = [
+  // ── ok ───────────────────────────────────────────────────────────────────
   {
     kind: 'moderation',
     id: 'mod-ok-1',
-    description: 'Normal greeting — should pass',
+    description: 'Normal greeting',
     messageBody: 'Hey! Loved your profile. What do you do for fun on weekends?',
     recentMessages: [],
     expected: 'ok',
@@ -18,15 +13,91 @@ export const moderationCases: ModerationCase[] = [
   {
     kind: 'moderation',
     id: 'mod-ok-2',
-    description: 'Playful compliment — should pass',
+    description: 'Playful compliment',
     messageBody: 'Your hiking photos are incredible, I need to know your trail secrets 😄',
     recentMessages: [],
     expected: 'ok',
   },
   {
     kind: 'moderation',
+    id: 'mod-ok-3',
+    description: 'Ask about shared interest',
+    messageBody: 'I saw you like board games — have you tried Wingspan? It just came out.',
+    recentMessages: [],
+    expected: 'ok',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-ok-4',
+    description: 'Suggest meeting up (normal)',
+    messageBody: "Would you want to grab coffee sometime? There's a great place near downtown.",
+    recentMessages: [],
+    expected: 'ok',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-ok-5',
+    description: 'Friendly question about work',
+    messageBody: 'What kind of design work do you do? I saw you mentioned UX in your bio.',
+    recentMessages: [],
+    expected: 'ok',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-ok-6',
+    description: 'Playful teasing in established banter context',
+    messageBody: 'Ok fine, your taste in music is marginally acceptable 😂',
+    recentMessages: [
+      {
+        id: '00000000-0000-0000-0000-000000000001',
+        match_id: '00000000-0000-0000-0000-000000000099',
+        sender_id: '00000000-0000-0000-0000-000000000002',
+        body: "You have terrible taste in movies, don't you 😄",
+        moderation: 'ok',
+        mod_reason: null,
+        created_at: '2026-11-01T10:00:00Z',
+      },
+    ],
+    expected: 'ok',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-ok-7',
+    description: 'Compliment on bio',
+    messageBody: 'The part about your dog made me smile. What breed is he?',
+    recentMessages: [],
+    expected: 'ok',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-ok-8',
+    description: 'Travel question',
+    messageBody: "You've been to Japan? That's on my list — where should I go first?",
+    recentMessages: [],
+    expected: 'ok',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-ok-9',
+    description: 'Short casual message',
+    messageBody: 'haha same, I literally just watched that last week',
+    recentMessages: [],
+    expected: 'ok',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-ok-10',
+    description: 'Asking about weekend plans',
+    messageBody: 'Any plans for this weekend? Weather looks amazing.',
+    recentMessages: [],
+    expected: 'ok',
+  },
+
+  // ── warn ─────────────────────────────────────────────────────────────────
+  {
+    kind: 'moderation',
     id: 'mod-warn-1',
-    description: 'Request to move off platform — should warn',
+    description: 'Request to move off platform with phone number',
     messageBody: "Let's continue this on WhatsApp, here's my number: +1-555-0199",
     recentMessages: [],
     expected: 'warn',
@@ -34,7 +105,7 @@ export const moderationCases: ModerationCase[] = [
   {
     kind: 'moderation',
     id: 'mod-warn-2',
-    description: 'Financial request — should warn',
+    description: 'Financial request',
     messageBody: "I'm stuck abroad and need $50 for a bus. Could you send it via Venmo?",
     recentMessages: [],
     expected: 'warn',
@@ -42,10 +113,94 @@ export const moderationCases: ModerationCase[] = [
   {
     kind: 'moderation',
     id: 'mod-warn-3',
-    description: 'Scam pattern — should warn',
+    description: 'Crypto investment scam pattern',
     messageBody:
       "I work in crypto investment. I've made 300% returns this month. Want me to show you how?",
     recentMessages: [],
     expected: 'warn',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-warn-4',
+    description: 'Sharing Instagram handle',
+    messageBody: 'Follow me on Instagram @alex.photo — I post there more often than here.',
+    recentMessages: [],
+    expected: 'warn',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-warn-5',
+    description: 'Sharing email address',
+    messageBody: "Here's my email: alex.johnson92@gmail.com — write to me there!",
+    recentMessages: [],
+    expected: 'warn',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-warn-6',
+    description: 'Urgency + gift card request',
+    messageBody:
+      "I have an emergency and can't access my bank account right now. Could you buy a $100 Google Play gift card and send me the code? I'll pay you back tomorrow.",
+    recentMessages: [],
+    expected: 'warn',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-warn-7',
+    description: 'Suspicious link',
+    messageBody: "Check out this site, it's hilarious: http://totally-normal-site.ru/win-prize",
+    recentMessages: [],
+    expected: 'warn',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-warn-8',
+    description: 'Mild harassment / rude after being ignored',
+    messageBody: "You could at least reply, it's been 3 days. Pretty rude honestly.",
+    recentMessages: [],
+    expected: 'warn',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-warn-9',
+    description: 'Telegram handle sharing',
+    messageBody: 'Add me on Telegram: @real_alex_99 — easier to chat there.',
+    recentMessages: [],
+    expected: 'warn',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-warn-10',
+    description: 'Too-good-to-be-true offer',
+    messageBody:
+      "I'm a model scout and I think you'd be perfect for a campaign. DM me your contact info.",
+    recentMessages: [],
+    expected: 'warn',
+  },
+
+  // ── block ────────────────────────────────────────────────────────────────
+  {
+    kind: 'moderation',
+    id: 'mod-block-1',
+    description: 'Credible threat of violence',
+    messageBody: "If you don't reply I'm going to find out where you live and hurt you.",
+    recentMessages: [],
+    expected: 'block',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-block-2',
+    description: 'Extreme hate speech calling for harm',
+    messageBody: 'People like you should be exterminated. You disgust me.',
+    recentMessages: [],
+    expected: 'block',
+  },
+  {
+    kind: 'moderation',
+    id: 'mod-block-3',
+    description: 'Explicit sexual threat',
+    messageBody: "I know where you work. Next time you're alone I'll show you what you deserve.",
+    recentMessages: [],
+    expected: 'block',
   },
 ];
