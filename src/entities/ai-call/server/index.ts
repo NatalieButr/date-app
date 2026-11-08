@@ -24,7 +24,7 @@ export async function getAdminMetrics(from?: string, to?: string): Promise<Metri
   const { data, error } = await supabase
     .from('ai_calls')
     .select(
-      'feature, input_tokens, output_tokens, cache_read_tokens, cache_write_tokens, cost_usd, latency_ms, status, user_id',
+      'feature, input_tokens, output_tokens, cache_read_tokens, cache_write_tokens, cost_usd, latency_ms, status, user_id, created_at',
     )
     .gte('created_at', isoDate(fromDate))
     .lte('created_at', isoDate(toDate))
@@ -82,7 +82,7 @@ export async function getAdminMetrics(from?: string, to?: string): Promise<Metri
     totalCostUsd += Number(row.cost_usd);
 
     if (row.user_id) {
-      const dayKey = `${row.user_id}:${new Date().toISOString().slice(0, 10)}`;
+      const dayKey = `${row.user_id}:${new Date(row.created_at).toISOString().slice(0, 10)}`;
       activeUserDays.add(dayKey);
     }
   }
@@ -113,12 +113,9 @@ export async function getAdminMetrics(from?: string, to?: string): Promise<Metri
   // Sort by cost descending
   metrics.sort((a, b) => b.cost_usd - a.cost_usd);
 
-  const daysInRange = Math.max(
-    1,
-    Math.ceil((toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)),
-  );
-  const uniqueUsers = new Set(Array.from(activeUserDays).map((k) => k.split(':')[0])).size;
-  const costPerUserDay = uniqueUsers > 0 ? totalCostUsd / (uniqueUsers * daysInRange) : 0;
+  // activeUserDays contains "userId:YYYY-MM-DD" keys — its size is the correct denominator
+  // for cost per user per day (each user × day counts once).
+  const costPerUserDay = activeUserDays.size > 0 ? totalCostUsd / activeUserDays.size : 0;
 
   return {
     metrics,

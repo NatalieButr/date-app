@@ -25,7 +25,8 @@ describe('AiCallRowSchema', () => {
   });
 
   it('rejects missing feature', () => {
-    const { feature: _feature, ...rest } = validRow;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { feature, ...rest } = validRow;
     expect(AiCallRowSchema.safeParse(rest).success).toBe(false);
   });
 

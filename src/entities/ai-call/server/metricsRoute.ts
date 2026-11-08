@@ -2,18 +2,14 @@ import 'server-only';
 
 import { type NextRequest, NextResponse } from 'next/server';
 
-import { isAdmin, requireViewer } from '@/entities/viewer/server';
+import { getCurrentViewer, isAdmin } from '@/entities/viewer/server';
 import { forbidden, unauthorized } from '@/shared/lib/http';
 
 import { getAdminMetrics } from './index';
 
 export async function adminMetricsGET(req: NextRequest): Promise<Response> {
-  let viewer;
-  try {
-    viewer = await requireViewer();
-  } catch {
-    return unauthorized();
-  }
+  const viewer = await getCurrentViewer();
+  if (!viewer) return unauthorized();
 
   if (!isAdmin(viewer.email)) {
     return forbidden();
