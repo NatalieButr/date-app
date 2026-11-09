@@ -49,7 +49,7 @@ export async function searchProfilesByQuery(
     query_embedding: embeddingStr,
     exclude_id: viewerId,
     k: limit,
-    filter_city: city ?? null,
+    filter_city: city ?? undefined,
   });
   if (error) throw new Error(`searchProfilesByQuery failed: ${error.message}`);
   return (data ?? []).map((row: unknown) => PublicProfileSchema.parse(row));

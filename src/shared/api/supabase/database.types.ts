@@ -37,6 +37,20 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"ai_model_pricing": {
+                  Row: {
+                    "cache_read_per_mtk": number,"cache_write_per_mtk": number,"input_per_mtk": number,"output_per_mtk": number,"tier": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "cache_read_per_mtk": number,"cache_write_per_mtk": number,"input_per_mtk": number,"output_per_mtk": number,"tier": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "cache_read_per_mtk"?: number,"cache_write_per_mtk"?: number,"input_per_mtk"?: number,"output_per_mtk"?: number,"tier"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"match_explanations": {
                   Row: {
                     "created_at": string,"prompt_ver": string,"reason": string,"score": number,"target_id": string,"viewer_id": string
@@ -283,7 +297,7 @@ isOneToOne: false
             }[]
                            },
 "search_profiles_by_embedding":
-{ Args: { "query_embedding": string,"exclude_id": string,"k": number,"filter_city"?: string | null }; Returns: {
+{ Args: { "exclude_id": string,"filter_city"?: string,"k": number,"query_embedding": string }; Returns: {
               "age": number,
 "avatar_url": string | null,
 "bio": string | null,

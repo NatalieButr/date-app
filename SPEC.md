@@ -35,16 +35,16 @@
 
 ## 2. Стек
 
-| Слой | Технология | Примечание |
-|---|---|---|
-| UI | React 19, Next.js 16 (App Router), TypeScript (strict), Tailwind, shadcn/ui, framer-motion | Свайпы, анимации |
-| API | Route Handlers + Server Actions, Zod | Ключи только на сервере |
-| LLM | `@anthropic-ai/sdk` — Sonnet и Haiku | Чистый SDK; Vercel AI SDK — опционально для UI чата |
-| Эмбеддинги | Voyage AI | Размерность из конфига (по умолчанию 1024) |
-| Данные | Supabase: Postgres + pgvector, Auth (email), Realtime | Типы генерируются `supabase gen types` |
-| Архитектура | Feature-Sliced Design, линтер Steiger | §4 |
-| Тесты / evals | Vitest, `npm run eval` | |
-| Деплой | Vercel (по push в `main`) | |
+| Слой          | Технология                                                                                 | Примечание                                          |
+| ------------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| UI            | React 19, Next.js 16 (App Router), TypeScript (strict), Tailwind, shadcn/ui, framer-motion | Свайпы, анимации                                    |
+| API           | Route Handlers + Server Actions, Zod                                                       | Ключи только на сервере                             |
+| LLM           | `@anthropic-ai/sdk` — Sonnet и Haiku                                                       | Чистый SDK; Vercel AI SDK — опционально для UI чата |
+| Эмбеддинги    | Voyage AI                                                                                  | Размерность из конфига (по умолчанию 1024)          |
+| Данные        | Supabase: Postgres + pgvector, Auth (email), Realtime                                      | Типы генерируются `supabase gen types`              |
+| Архитектура   | Feature-Sliced Design, линтер Steiger                                                      | §4                                                  |
+| Тесты / evals | Vitest, `npm run eval`                                                                     |                                                     |
+| Деплой        | Vercel (по push в `main`)                                                                  |                                                     |
 
 ID моделей не хардкодятся — берутся из env (`CLAUDE_MODEL_SMART`, `CLAUDE_MODEL_FAST`), актуальные значения — со страницы Models overview.
 
@@ -81,14 +81,14 @@ ID моделей не хардкодятся — берутся из env (`CLAU
 
 Импорт разрешён **только сверху вниз**. Внутри одного слоя слайсы друг друга **не импортируют**.
 
-| Слой | Назначение | Может импортировать |
-|---|---|---|
-| `_app` | Провайдеры, глобальные стили, инициализация | всё ниже |
-| `_pages` | Композиция экрана из виджетов | widgets, features, entities, shared |
-| `widgets` | Самостоятельные блоки UI (колода свайпов, окно чата) | features, entities, shared |
-| `features` | Пользовательские действия с бизнес-ценностью (свайпнуть, отправить сообщение, спросить агента) | entities, shared |
-| `entities` | Бизнес-сущности: типы, запросы к БД, базовый UI | shared |
-| `shared` | Инфраструктура без бизнес-логики: UI-кит, клиенты, конфиг, AI-клиент | ничего из слоёв выше |
+| Слой       | Назначение                                                                                     | Может импортировать                 |
+| ---------- | ---------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `_app`     | Провайдеры, глобальные стили, инициализация                                                    | всё ниже                            |
+| `_pages`   | Композиция экрана из виджетов                                                                  | widgets, features, entities, shared |
+| `widgets`  | Самостоятельные блоки UI (колода свайпов, окно чата)                                           | features, entities, shared          |
+| `features` | Пользовательские действия с бизнес-ценностью (свайпнуть, отправить сообщение, спросить агента) | entities, shared                    |
+| `entities` | Бизнес-сущности: типы, запросы к БД, базовый UI                                                | shared                              |
+| `shared`   | Инфраструктура без бизнес-логики: UI-кит, клиенты, конфиг, AI-клиент                           | ничего из слоёв выше                |
 
 Слои `app` и `pages` названы `_app` и `_pages` — так рекомендует документация FSD для Next.js, чтобы не конфликтовать с папками роутера; Steiger это поддерживает.
 
@@ -96,14 +96,14 @@ ID моделей не хардкодятся — берутся из env (`CLAU
 
 ### 4.2. Сегменты внутри слайса
 
-| Сегмент | Что лежит | Где выполняется |
-|---|---|---|
-| `ui/` | React-компоненты | client / server components |
-| `model/` | Типы, Zod-схемы, хуки состояния, сторы | client-safe |
-| `api/` | Клиентские запросы к своим эндпоинтам (fetch, SSE-ридеры, хуки) | client |
+| Сегмент   | Что лежит                                                                                            | Где выполняется                                           |
+| --------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `ui/`     | React-компоненты                                                                                     | client / server components                                |
+| `model/`  | Типы, Zod-схемы, хуки состояния, сторы                                                               | client-safe                                               |
+| `api/`    | Клиентские запросы к своим эндпоинтам (fetch, SSE-ридеры, хуки)                                      | client                                                    |
 | `server/` | Серверная логика: обработчики эндпоинтов, Server Actions, запросы с service role, вызовы AI, промпты | **только сервер**, первая строка — `import 'server-only'` |
-| `lib/` | Чистые функции слайса | client-safe |
-| `config/` | Константы слайса | client-safe |
+| `lib/`    | Чистые функции слайса                                                                                | client-safe                                               |
+| `config/` | Константы слайса                                                                                     | client-safe                                               |
 
 ### 4.3. Public API
 
@@ -223,29 +223,29 @@ src/features/onboarding/
 
 ## 5. Карта слайсов
 
-| Слайс | Слой | Ответственность | Фича / задача |
-|---|---|---|---|
-| `shared/ai` | shared | Клиент Claude, structured output, стрим, ретраи, фолбэк, логирование, цены, эмбеддинги, rate limit | §7 / T-03 |
-| `shared/api/supabase` | shared | Клиенты (browser/server/admin), типы БД | §6 / T-02 |
-| `shared/config` | shared | Валидация env через Zod | §12 / T-03 |
-| `entities/viewer` | entities | Сессия, текущий профиль, `requireViewer()`, `isOnboarded()`, `isAdmin()` | T-04 |
-| `entities/profile` | entities | Тип `Profile`/`PublicProfile`, `ProfileCard`, `getProfile`, `searchProfilesByVector`, `buildEmbeddingText`, `upsertProfileEmbedding` | F1, F3 / T-05, T-06 |
-| `entities/match` | entities | Тип, `getMyMatches`, `getMatchForViewer`, `MatchListItem` | F3, F5 / T-06 |
-| `entities/message` | entities | Тип, `MessageBubble`, `listMessages`, `subscribeToMatch`, `moderateMessage`, `createMessage`, `insertWarningAndCount` | F5, F7 / T-09, T-10 |
-| `entities/ai-call` | entities | Тип, агрегаты метрик для `/admin` | F9 / T-13 |
-| `features/auth-by-email` | features | Форма входа/регистрации | T-04 |
-| `features/demo-login` | features | Кнопка и эндпоинт входа под демо | T-15 |
-| `features/onboarding` | features | Форма базовых данных, чат, извлечение, био, сохранение | F2 / T-07 |
-| `features/swipe-profile` | features | Like/dislike, создание матча | F3 / T-06 |
-| `features/rank-feed` | features | Retrieval + реранкинг + кэш `match_explanations`, эндпоинт ленты | F4 / T-08 |
-| `features/send-message` | features | Поле ввода, отправка (модерация через `entities/message`) | F5 / T-09 |
-| `features/icebreakers` | features | Кнопка, стрим 3 вариантов | F6 / T-11 |
-| `features/chat-coach` | features | Кнопка, стрим подсказки, обрезка истории | F6 / T-11 |
-| `features/wingman` | features | Агентный цикл, инструменты, SSE событий, подтверждение | F8 / T-12 |
-| `widgets/swipe-deck` | widgets | Колода: `rank-feed` + `swipe-profile` + `ProfileCard` | F3, F4 / T-06, T-08 |
-| `widgets/chat-window` | widgets | Сообщения + `send-message` + `icebreakers` + `chat-coach` | F5, F6 / T-09, T-11 |
-| `widgets/wingman-panel` | widgets | UI агента | F8 / T-12 |
-| `widgets/admin-dashboard` | widgets | Таблицы/графики метрик и evals | F9, F10 / T-13 |
+| Слайс                     | Слой     | Ответственность                                                                                                                      | Фича / задача       |
+| ------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------- |
+| `shared/ai`               | shared   | Клиент Claude, structured output, стрим, ретраи, фолбэк, логирование, цены, эмбеддинги, rate limit                                   | §7 / T-03           |
+| `shared/api/supabase`     | shared   | Клиенты (browser/server/admin), типы БД                                                                                              | §6 / T-02           |
+| `shared/config`           | shared   | Валидация env через Zod                                                                                                              | §12 / T-03          |
+| `entities/viewer`         | entities | Сессия, текущий профиль, `requireViewer()`, `isOnboarded()`, `isAdmin()`                                                             | T-04                |
+| `entities/profile`        | entities | Тип `Profile`/`PublicProfile`, `ProfileCard`, `getProfile`, `searchProfilesByVector`, `buildEmbeddingText`, `upsertProfileEmbedding` | F1, F3 / T-05, T-06 |
+| `entities/match`          | entities | Тип, `getMyMatches`, `getMatchForViewer`, `MatchListItem`                                                                            | F3, F5 / T-06       |
+| `entities/message`        | entities | Тип, `MessageBubble`, `listMessages`, `subscribeToMatch`, `moderateMessage`, `createMessage`, `insertWarningAndCount`                | F5, F7 / T-09, T-10 |
+| `entities/ai-call`        | entities | Тип, агрегаты метрик для `/admin`                                                                                                    | F9 / T-13           |
+| `features/auth-by-email`  | features | Форма входа/регистрации                                                                                                              | T-04                |
+| `features/demo-login`     | features | Кнопка и эндпоинт входа под демо                                                                                                     | T-15                |
+| `features/onboarding`     | features | Форма базовых данных, чат, извлечение, био, сохранение                                                                               | F2 / T-07           |
+| `features/swipe-profile`  | features | Like/dislike, создание матча                                                                                                         | F3 / T-06           |
+| `features/rank-feed`      | features | Retrieval + реранкинг + кэш `match_explanations`, эндпоинт ленты                                                                     | F4 / T-08           |
+| `features/send-message`   | features | Поле ввода, отправка (модерация через `entities/message`)                                                                            | F5 / T-09           |
+| `features/icebreakers`    | features | Кнопка, стрим 3 вариантов                                                                                                            | F6 / T-11           |
+| `features/chat-coach`     | features | Кнопка, стрим подсказки, обрезка истории                                                                                             | F6 / T-11           |
+| `features/wingman`        | features | Агентный цикл, инструменты, SSE событий, подтверждение                                                                               | F8 / T-12           |
+| `widgets/swipe-deck`      | widgets  | Колода: `rank-feed` + `swipe-profile` + `ProfileCard`                                                                                | F3, F4 / T-06, T-08 |
+| `widgets/chat-window`     | widgets  | Сообщения + `send-message` + `icebreakers` + `chat-coach`                                                                            | F5, F6 / T-09, T-11 |
+| `widgets/wingman-panel`   | widgets  | UI агента                                                                                                                            | F8 / T-12           |
+| `widgets/admin-dashboard` | widgets  | Таблицы/графики метрик и evals                                                                                                       | F9, F10 / T-13      |
 
 > Модерация и создание сообщения живут в `entities/message/server`, потому что их используют две фичи (`send-message`, `wingman`), а фичи не импортируют друг друга.
 > Агент Wingman вызывает `entities/profile` и `entities/match` напрямую, а не `rank-feed`.
@@ -349,6 +349,17 @@ create table ai_calls (
   created_at         timestamptz not null default now()
 );
 create index on ai_calls (feature, created_at);
+
+create table ai_model_pricing (
+  tier                 text        primary key check (tier in ('smart', 'fast')),
+  input_per_mtk        numeric(10, 4) not null,
+  output_per_mtk       numeric(10, 4) not null,
+  cache_write_per_mtk  numeric(10, 4) not null,
+  cache_read_per_mtk   numeric(10, 4) not null,
+  updated_at           timestamptz not null default now()
+);
+-- Only admin client. No user-visible RLS policy.
+alter table ai_model_pricing enable row level security;
 ```
 
 **RPC**
@@ -361,7 +372,7 @@ create index on ai_calls (feature, created_at);
 - `profiles`: select — аутентифицированные (наружу только через `public_profiles`); update — владелец.
 - `swipes`: insert/select только свои (через RPC).
 - `matches`, `messages`: select только участникам. Insert в `messages` — только admin-клиент (secret key, после модерации).
-- `match_explanations`, `ai_calls`: только admin-клиент.
+- `match_explanations`, `ai_calls`, `ai_model_pricing`: только admin-клиент.
 
 ---
 
@@ -370,20 +381,28 @@ create index on ai_calls (feature, created_at);
 Public API (`@/shared/ai`, server-only):
 
 ```ts
-export type Feature = 'onboarding' | 'bio' | 'rerank' | 'icebreaker' | 'coach'
-                    | 'moderation' | 'wingman' | 'seed' | 'judge';
+export type Feature =
+  | 'onboarding'
+  | 'bio'
+  | 'rerank'
+  | 'icebreaker'
+  | 'coach'
+  | 'moderation'
+  | 'wingman'
+  | 'seed'
+  | 'judge';
 
 export interface CallOptions {
   feature: Feature;
-  tier: 'smart' | 'fast';          // smart = Sonnet, fast = Haiku
-  system: string | SystemBlock[];  // блоки с cache_control
+  tier: 'smart' | 'fast'; // smart = Sonnet, fast = Haiku
+  system: string | SystemBlock[]; // блоки с cache_control
   messages: MessageParam[];
   tools?: Tool[];
   maxTokens: number;
   temperature?: number;
   promptVer: string;
   userId?: string;
-  allowFallback?: boolean;         // default true; false для wingman
+  allowFallback?: boolean; // default true; false для wingman
 }
 
 export function complete(opts: CallOptions): Promise<Message>;
@@ -405,15 +424,15 @@ export function rateLimit(userId: string, bucket: string): Promise<void>; // thr
 
 **Выбор модели**
 
-| Фича | Tier | Почему |
-|---|---|---|
-| Онбординг-чат, извлечение профиля, био | smart | Качество текста и структуры |
-| Реранкинг + объяснение | smart | Рассуждение по нескольким профилям |
-| Icebreakers, коуч | smart (стрим) | Тон, контекст |
-| Модерация | fast | Дёшево, быстро, на каждое сообщение |
-| Wingman-агент | smart, без фолбэка | Tool use, планирование |
-| LLM-as-judge | smart | Оценка по рубрике |
-| Сид-профили | fast | Разовый скрипт |
+| Фича                                   | Tier               | Почему                              |
+| -------------------------------------- | ------------------ | ----------------------------------- |
+| Онбординг-чат, извлечение профиля, био | smart              | Качество текста и структуры         |
+| Реранкинг + объяснение                 | smart              | Рассуждение по нескольким профилям  |
+| Icebreakers, коуч                      | smart (стрим)      | Тон, контекст                       |
+| Модерация                              | fast               | Дёшево, быстро, на каждое сообщение |
+| Wingman-агент                          | smart, без фолбэка | Tool use, планирование              |
+| LLM-as-judge                           | smart              | Оценка по рубрике                   |
+| Сид-профили                            | fast               | Разовый скрипт                      |
 
 **Промпты** живут в `server/prompts.ts` своего слайса, каждый экспортирует `version` (например `'rerank@3'`). Версия пишется в `ai_calls.prompt_ver` и `match_explanations.prompt_ver`.
 
@@ -443,10 +462,10 @@ export function rateLimit(userId: string, bucket: string): Promise<void>; // thr
 ```ts
 export const ProfileExtractSchema = z.object({
   interests: z.array(z.string().min(2).max(40)).min(3).max(10),
-  values:    z.array(z.string().min(2).max(40)).min(2).max(6),
-  seeking:   z.string().max(200),
+  values: z.array(z.string().min(2).max(40)).min(2).max(6),
+  seeking: z.string().max(200),
   red_flags: z.array(z.string().max(80)).max(5),
-  summary:   z.string().max(300),
+  summary: z.string().max(300),
 });
 export const BioOptionsSchema = z.object({
   options: z.array(z.object({ tone: z.string(), text: z.string().max(500) })).length(3),
@@ -473,11 +492,15 @@ export const BioOptionsSchema = z.object({
 - **Контракт ответа реранкера:**
 
 ```ts
-export const RerankSchema = z.object({ ranked: z.array(z.object({
-  id: z.string().uuid(),
-  score: z.number().min(0).max(1),
-  reason: z.string().max(160),
-})) });
+export const RerankSchema = z.object({
+  ranked: z.array(
+    z.object({
+      id: z.string().uuid(),
+      score: z.number().min(0).max(1),
+      reason: z.string().max(160),
+    }),
+  ),
+});
 ```
 
 - ID из ответа фильтруются по входному набору; отсутствующие кандидаты получают `score = 0` и нейтральное объяснение.
@@ -507,8 +530,8 @@ export const RerankSchema = z.object({ ranked: z.array(z.object({
 
 ```ts
 export const ModerationSchema = z.object({
-  verdict: z.enum(['ok','warn','block']),
-  category: z.enum(['none','harassment','sexual','scam','spam','hate','self_harm','other']),
+  verdict: z.enum(['ok', 'warn', 'block']),
+  category: z.enum(['none', 'harassment', 'sexual', 'scam', 'spam', 'hate', 'self_harm', 'other']),
   reason: z.string().max(140),
 });
 ```
@@ -524,13 +547,13 @@ export const ModerationSchema = z.object({
 - **Слайсы:** `features/wingman`, `widgets/wingman-panel`, `pages/wingman`; данные — через `entities/profile/server`, `entities/match/server`, `entities/message/server`.
 - **Инструменты** (`features/wingman/server/tools/*.ts`, у каждого Zod-схема входа):
 
-| Tool | Вход | Выход |
-|---|---|---|
-| `search_profiles` | `query: string, city?: string, limit?: number (≤10)` | краткие профили (эмбеддинг запроса `inputType: 'query'` + фильтры) |
-| `get_profile` | `id: uuid` | публичный профиль |
-| `get_my_matches` | — | матчи с последним сообщением |
-| `suggest_date_ideas` | `city: string, interests: string[]` | 3–5 идей (генерация, без внешних API) |
-| `draft_message` | `target_id: uuid, intent: string` | черновик (**не отправляет**) |
+| Tool                 | Вход                                                 | Выход                                                              |
+| -------------------- | ---------------------------------------------------- | ------------------------------------------------------------------ |
+| `search_profiles`    | `query: string, city?: string, limit?: number (≤10)` | краткие профили (эмбеддинг запроса `inputType: 'query'` + фильтры) |
+| `get_profile`        | `id: uuid`                                           | публичный профиль                                                  |
+| `get_my_matches`     | —                                                    | матчи с последним сообщением                                       |
+| `suggest_date_ideas` | `city: string, interests: string[]`                  | 3–5 идей (генерация, без внешних API)                              |
+| `draft_message`      | `target_id: uuid, intent: string`                    | черновик (**не отправляет**)                                       |
 
 - **Цикл** (`server/loop.ts`, без фреймворков): максимум 8 шагов, общий таймаут 60 с, параллельные `tool_use` через `Promise.all`; ошибка инструмента → `tool_result` с `is_error: true`; превышение лимита → финальный ответ с найденным.
 - **SSE-события** `POST /api/wingman`:
@@ -538,7 +561,12 @@ export const ModerationSchema = z.object({
 ```ts
 type WingmanEvent =
   | { type: 'step'; tool: string; label: string }
-  | { type: 'final'; text: string; profiles: PublicProfile[]; drafts: { targetId: string; text: string }[] }
+  | {
+      type: 'final';
+      text: string;
+      profiles: PublicProfile[];
+      drafts: { targetId: string; text: string }[];
+    }
   | { type: 'error'; message: string };
 ```
 
@@ -578,21 +606,21 @@ type WingmanEvent =
 
 Все `route.ts` в `app/api/**` — однострочные реэкспорты.
 
-| Метод | Путь | Обработчик | AI |
-|---|---|---|---|
-| POST | `/api/auth/demo` | `features/demo-login/server` | — |
-| POST | `/api/onboarding/chat` | `features/onboarding/server` | smart, SSE |
-| POST | `/api/onboarding/extract` | `features/onboarding/server` | smart, structured |
-| POST | `/api/onboarding/bio` | `features/onboarding/server` | smart, structured |
-| GET | `/api/feed` | `features/rank-feed/server` | smart (rerank, кэш) |
-| POST | `/api/swipe` | `features/swipe-profile/server` | — |
-| GET | `/api/chat/[matchId]/messages` | `entities/message/server` | — |
-| POST | `/api/chat/[matchId]/messages` | `features/send-message/server` | fast (модерация) |
-| POST | `/api/chat/[matchId]/icebreakers` | `features/icebreakers/server` | smart + cache, SSE |
-| POST | `/api/chat/[matchId]/coach` | `features/chat-coach/server` | smart + cache, SSE |
-| POST | `/api/wingman` | `features/wingman/server` | smart + tools, SSE |
-| POST | `/api/wingman/confirm` | `features/wingman/server` | fast (модерация) |
-| GET | `/api/admin/metrics` | `entities/ai-call/server` | — |
+| Метод | Путь                              | Обработчик                      | AI                  |
+| ----- | --------------------------------- | ------------------------------- | ------------------- |
+| POST  | `/api/auth/demo`                  | `features/demo-login/server`    | —                   |
+| POST  | `/api/onboarding/chat`            | `features/onboarding/server`    | smart, SSE          |
+| POST  | `/api/onboarding/extract`         | `features/onboarding/server`    | smart, structured   |
+| POST  | `/api/onboarding/bio`             | `features/onboarding/server`    | smart, structured   |
+| GET   | `/api/feed`                       | `features/rank-feed/server`     | smart (rerank, кэш) |
+| POST  | `/api/swipe`                      | `features/swipe-profile/server` | —                   |
+| GET   | `/api/chat/[matchId]/messages`    | `entities/message/server`       | —                   |
+| POST  | `/api/chat/[matchId]/messages`    | `features/send-message/server`  | fast (модерация)    |
+| POST  | `/api/chat/[matchId]/icebreakers` | `features/icebreakers/server`   | smart + cache, SSE  |
+| POST  | `/api/chat/[matchId]/coach`       | `features/chat-coach/server`    | smart + cache, SSE  |
+| POST  | `/api/wingman`                    | `features/wingman/server`       | smart + tools, SSE  |
+| POST  | `/api/wingman/confirm`            | `features/wingman/server`       | fast (модерация)    |
+| GET   | `/api/admin/metrics`              | `entities/ai-call/server`       | —                   |
 
 Единый формат ошибок `{ error: { code, message } }` (хелпер в `shared/lib/http`): 400 — Zod, 401/403, 422 — модерация `block`, 429 — rate limit, 502 — сбой AI после ретраев.
 
@@ -631,19 +659,19 @@ DEMO_USER_PASSWORD=
 
 ## 13. Команды и тестирование
 
-| Команда | Что делает |
-|---|---|
-| `npm run bootstrap` | Установка зависимостей (один раз после клонирования каркаса) |
-| `npm run dev` | Локальный запуск |
-| `npm run typecheck` | `tsc --noEmit` |
-| `npm run lint` | ESLint |
-| `npm run lint:fsd` | `steiger ./src` |
-| `npm run test` | Vitest |
-| `npm run check` | typecheck + lint + lint:fsd + test — **обязателен перед завершением задачи** |
-| `npm run test:e2e` | Playwright e2e (`e2e/`), проекты `desktop` и `mobile-360` |
-| `npm run db:types` | Генерация `database.types.ts` |
-| `npm run seed` | F1 |
-| `npm run eval` | F10 |
+| Команда             | Что делает                                                                   |
+| ------------------- | ---------------------------------------------------------------------------- |
+| `npm run bootstrap` | Установка зависимостей (один раз после клонирования каркаса)                 |
+| `npm run dev`       | Локальный запуск                                                             |
+| `npm run typecheck` | `tsc --noEmit`                                                               |
+| `npm run lint`      | ESLint                                                                       |
+| `npm run lint:fsd`  | `steiger ./src`                                                              |
+| `npm run test`      | Vitest                                                                       |
+| `npm run check`     | typecheck + lint + lint:fsd + test — **обязателен перед завершением задачи** |
+| `npm run test:e2e`  | Playwright e2e (`e2e/`), проекты `desktop` и `mobile-360`                    |
+| `npm run db:types`  | Генерация `database.types.ts`                                                |
+| `npm run seed`      | F1                                                                           |
+| `npm run eval`      | F10                                                                          |
 
 Тесты лежат в `__tests__/` внутри слайса. Обязательные:
 
@@ -664,23 +692,23 @@ E2E (Playwright, `e2e/*.spec.ts`): смоук главной уже есть; п
 
 Задачи выполняются по порядку зависимостей. **H** — зона, которую пишет человек (§15.3): агент создаёт только каркас с типами и `TODO(human)`.
 
-| ID | День | Задача | Слайсы | Зависит от |
-|---|---|---|---|---|
-| T-01 | 1 | Каркас: Next.js, TS strict, Tailwind, shadcn/ui, алиасы, FSD-папки, Steiger, ESLint-правила §4.6, `npm run check` | весь репо | — |
-| T-02 | 1 | Supabase: миграции §6, RLS, RPC, генерация типов, клиенты | `shared/api/supabase` | T-01 |
-| T-03 | 1 | `shared/config` (env) и `shared/ai`: клиент, логирование, цены, ретраи, фолбэк, `structured`, `stream`, `embed`, rate limit | `shared/config`, `shared/ai` | T-02 |
-| T-04 | 1 | Auth по email, `entities/viewer`, редиректы в `proxy.ts`, `app-shell` | `features/auth-by-email`, `entities/viewer`, `widgets/app-shell` | T-02 |
-| T-05 | 1 | Сид-скрипт и эмбеддинги | `scripts/*`, `entities/profile` | T-03 |
-| T-06 | 2 | Свайпы, матч, колода (пока без ранжирования — случайный порядок) | `features/swipe-profile`, `widgets/swipe-deck`, `entities/profile`, `entities/match`, `pages/feed` | T-04 |
-| T-07 | 2 | Онбординг: UI, эндпоинты, сохранение. **Промпты и extract — H** | `features/onboarding`, `pages/onboarding` | T-03, T-04 |
-| T-08 | 3 | `match_candidates`, retrieval, кэш объяснений, подключение к колоде. **Промпт реранкинга — H** | `features/rank-feed`, `widgets/swipe-deck` | T-05, T-06 |
-| T-09 | 4 | Чат: список матчей, сообщения, Realtime, отправка | `entities/message`, `features/send-message`, `widgets/chat-window`, `widgets/match-list`, `pages/matches`, `pages/chat` | T-06 |
-| T-10 | 4 | Модерация. **Промпт — H** | `entities/message/server` | T-09 |
-| T-11 | 4 | Icebreakers и коуч: UI, SSE, token budget. **Промпты и caching-блоки — H** | `features/icebreakers`, `features/chat-coach` | T-09 |
-| T-12 | 5 | Wingman: UI шагов, SSE, confirm, реализации инструментов. **Цикл и описания инструментов — H** | `features/wingman`, `widgets/wingman-panel`, `pages/wingman` | T-08, T-10 |
-| T-13 | 6 | Админка | `entities/ai-call`, `widgets/admin-dashboard`, `pages/admin` | T-03 |
-| T-14 | 6 | Evals: раннер, формат кейсов, отчёт. **Кейсы и рубрика судьи — H** | `evals/` | T-08, T-10 |
-| T-15 | 7 | Полировка: мобильная вёрстка, состояния, демо-вход, README | `features/demo-login`, все `pages`, `shared/ui` | всё |
+| ID   | День | Задача                                                                                                                      | Слайсы                                                                                                                  | Зависит от |
+| ---- | ---- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ---------- |
+| T-01 | 1    | Каркас: Next.js, TS strict, Tailwind, shadcn/ui, алиасы, FSD-папки, Steiger, ESLint-правила §4.6, `npm run check`           | весь репо                                                                                                               | —          |
+| T-02 | 1    | Supabase: миграции §6, RLS, RPC, генерация типов, клиенты                                                                   | `shared/api/supabase`                                                                                                   | T-01       |
+| T-03 | 1    | `shared/config` (env) и `shared/ai`: клиент, логирование, цены, ретраи, фолбэк, `structured`, `stream`, `embed`, rate limit | `shared/config`, `shared/ai`                                                                                            | T-02       |
+| T-04 | 1    | Auth по email, `entities/viewer`, редиректы в `proxy.ts`, `app-shell`                                                       | `features/auth-by-email`, `entities/viewer`, `widgets/app-shell`                                                        | T-02       |
+| T-05 | 1    | Сид-скрипт и эмбеддинги                                                                                                     | `scripts/*`, `entities/profile`                                                                                         | T-03       |
+| T-06 | 2    | Свайпы, матч, колода (пока без ранжирования — случайный порядок)                                                            | `features/swipe-profile`, `widgets/swipe-deck`, `entities/profile`, `entities/match`, `pages/feed`                      | T-04       |
+| T-07 | 2    | Онбординг: UI, эндпоинты, сохранение. **Промпты и extract — H**                                                             | `features/onboarding`, `pages/onboarding`                                                                               | T-03, T-04 |
+| T-08 | 3    | `match_candidates`, retrieval, кэш объяснений, подключение к колоде. **Промпт реранкинга — H**                              | `features/rank-feed`, `widgets/swipe-deck`                                                                              | T-05, T-06 |
+| T-09 | 4    | Чат: список матчей, сообщения, Realtime, отправка                                                                           | `entities/message`, `features/send-message`, `widgets/chat-window`, `widgets/match-list`, `pages/matches`, `pages/chat` | T-06       |
+| T-10 | 4    | Модерация. **Промпт — H**                                                                                                   | `entities/message/server`                                                                                               | T-09       |
+| T-11 | 4    | Icebreakers и коуч: UI, SSE, token budget. **Промпты и caching-блоки — H**                                                  | `features/icebreakers`, `features/chat-coach`                                                                           | T-09       |
+| T-12 | 5    | Wingman: UI шагов, SSE, confirm, реализации инструментов. **Цикл и описания инструментов — H**                              | `features/wingman`, `widgets/wingman-panel`, `pages/wingman`                                                            | T-08, T-10 |
+| T-13 | 6    | Админка                                                                                                                     | `entities/ai-call`, `widgets/admin-dashboard`, `pages/admin`                                                            | T-03       |
+| T-14 | 6    | Evals: раннер, формат кейсов, отчёт. **Кейсы и рубрика судьи — H**                                                          | `evals/`                                                                                                                | T-08, T-10 |
+| T-15 | 7    | Полировка: мобильная вёрстка, состояния, демо-вход, README                                                                  | `features/demo-login`, все `pages`, `shared/ui`                                                                         | всё        |
 
 ---
 
@@ -730,15 +758,15 @@ E2E (Playwright, `e2e/*.spec.ts`): смоук главной уже есть; п
 
 Каждый день заканчивается зелёным `npm run check` и рабочим деплоем на Vercel.
 
-| День | Задачи | Критерий приёмки |
-|---|---|---|
-| 1 | T-01…T-05 | 50 профилей в базе; деплой открывается; известна стоимость сида |
-| 2 | T-06, T-07 | Новый пользователь за 2 минуты получает валидный профиль и попадает в ленту |
-| 3 | T-08 | Лента отсортирована по совместимости, у каждой карточки есть объяснение, повторный заход не вызывает API |
-| 4 | T-09…T-11 | Два аккаунта переписываются в реальном времени; в `ai_calls` видны cache hits |
-| 5 | T-12 | Запрос «найди кого-то, кто любит горы, и предложи свидание в Варшаве» отрабатывает за 3–5 шагов |
-| 6 | T-13, T-14 | Есть таблица «до/после» хотя бы для одного улучшения промпта |
-| 7 | T-15 | Вход по ссылке в один клик; README содержит всё из §16.2 |
+| День | Задачи     | Критерий приёмки                                                                                         |
+| ---- | ---------- | -------------------------------------------------------------------------------------------------------- |
+| 1    | T-01…T-05  | 50 профилей в базе; деплой открывается; известна стоимость сида                                          |
+| 2    | T-06, T-07 | Новый пользователь за 2 минуты получает валидный профиль и попадает в ленту                              |
+| 3    | T-08       | Лента отсортирована по совместимости, у каждой карточки есть объяснение, повторный заход не вызывает API |
+| 4    | T-09…T-11  | Два аккаунта переписываются в реальном времени; в `ai_calls` видны cache hits                            |
+| 5    | T-12       | Запрос «найди кого-то, кто любит горы, и предложи свидание в Варшаве» отрабатывает за 3–5 шагов          |
+| 6    | T-13, T-14 | Есть таблица «до/после» хотя бы для одного улучшения промпта                                             |
+| 7    | T-15       | Вход по ссылке в один клик; README содержит всё из §16.2                                                 |
 
 ### 16.2. Что сдаётся в конце
 
@@ -760,11 +788,11 @@ $5–10 кредитов Claude Console на неделю (оценка), лим
 
 ### 16.4. Риски
 
-| Риск | Митигация |
-|---|---|
-| Перерасход бюджета на API | Лимит в консоли, логирование стоимости с T-03, fast-tier где возможно, кэш реранкинга |
-| Невалидный JSON от модели | Structured output + Zod + один ретрай |
-| Prompt injection через био/сообщения | XML-теги, инструкция в system, сверка ID, evals на injection |
-| Зацикливание агента | Лимит шагов и таймаут |
-| Перегрузка API (429/529) | Ретраи с backoff и фолбэк на Haiku |
-| Отставание от графика | T-01…T-12 — обязательный минимум; при нехватке времени `/admin` упрощается до таблицы |
+| Риск                                 | Митигация                                                                             |
+| ------------------------------------ | ------------------------------------------------------------------------------------- |
+| Перерасход бюджета на API            | Лимит в консоли, логирование стоимости с T-03, fast-tier где возможно, кэш реранкинга |
+| Невалидный JSON от модели            | Structured output + Zod + один ретрай                                                 |
+| Prompt injection через био/сообщения | XML-теги, инструкция в system, сверка ID, evals на injection                          |
+| Зацикливание агента                  | Лимит шагов и таймаут                                                                 |
+| Перегрузка API (429/529)             | Ретраи с backoff и фолбэк на Haiku                                                    |
+| Отставание от графика                | T-01…T-12 — обязательный минимум; при нехватке времени `/admin` упрощается до таблицы |
