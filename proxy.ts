@@ -5,7 +5,7 @@ import { updateSession } from '@/shared/api/supabase/proxy';
 import { publicEnv } from '@/shared/config/env.public';
 import type { Database } from '@/shared/api/supabase/database.types';
 
-const PUBLIC_PATHS = ['/', '/login'];
+const PUBLIC_PATHS = ['/', '/login', '/forgot-password', '/reset-password'];
 
 function isPublicPath(pathname: string): boolean {
   // API routes handle their own auth — do not redirect, let them return 401/403

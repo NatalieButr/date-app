@@ -648,6 +648,7 @@ EMBEDDING_DIM=1024
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 SUPABASE_SECRET_KEY=           # только сервер
+SITE_URL=                      # полный origin для email-ссылок (например https://your-app.vercel.app)
 ADMIN_EMAILS=
 DEMO_USER_EMAIL=
 DEMO_USER_PASSWORD=

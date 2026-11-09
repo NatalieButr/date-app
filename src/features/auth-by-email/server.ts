@@ -1,1 +1,1 @@
-export { signIn, signUp, signOut } from './server/actions';
+export { signIn, signUp, signOut, requestPasswordReset, resetPassword } from './server/actions';
