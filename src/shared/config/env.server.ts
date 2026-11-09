@@ -27,6 +27,7 @@ const ServerEnvSchema = z.object({
     .string()
     .optional()
     .transform((v) => v || undefined),
+  SITE_URL: z.string().url().min(1),
 });
 
 export type ServerEnv = z.infer<typeof ServerEnvSchema>;

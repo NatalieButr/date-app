@@ -1,10 +1,10 @@
 'use server';
 import 'server-only';
 
-import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { createSupabaseServerClient } from '@/shared/api/supabase/server';
+import { serverEnv } from '@/shared/config/env.server';
 
 import {
   ForgotPasswordSchema,
@@ -58,10 +58,7 @@ export async function requestPasswordReset(
   const parsed = ForgotPasswordSchema.safeParse({ email: formData.get('email') });
   if (!parsed.success) return parsed.error.issues[0]?.message ?? 'Invalid email';
 
-  const headersList = await headers();
-  const host = headersList.get('host') ?? 'localhost:3000';
-  const protocol = host.startsWith('localhost') || host.startsWith('127.') ? 'http' : 'https';
-  const redirectTo = `${protocol}://${host}/reset-password`;
+  const redirectTo = `${serverEnv().SITE_URL}/reset-password`;
 
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, { redirectTo });

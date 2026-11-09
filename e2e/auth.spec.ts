@@ -1,5 +1,17 @@
 import { expect, test } from '@playwright/test';
 
+test.describe('Redirects (unauthenticated)', () => {
+  test('/feed redirects to /login', async ({ page }) => {
+    await page.goto('/feed');
+    await expect(page).toHaveURL(/\/login/);
+  });
+
+  test('/onboarding redirects to /login', async ({ page }) => {
+    await page.goto('/onboarding');
+    await expect(page).toHaveURL(/\/login/);
+  });
+});
+
 test.describe('Auth pages', () => {
   test('sign-in tab shows Forgot password link', async ({ page }) => {
     await page.goto('/login');

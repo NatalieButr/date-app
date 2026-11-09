@@ -16,16 +16,22 @@ export function ResetPasswordForm() {
 
   useEffect(() => {
     const supabase = createSupabaseBrowserClient();
+    // Only unlock the form for a genuine password-recovery link; SIGNED_IN alone
+    // (e.g. a logged-in user navigating to /reset-password) must not silently allow
+    // setting a new password without the user's current password.
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN') {
+      if (event === 'PASSWORD_RECOVERY') {
         setReady(true);
       }
     });
-    // Also check if the session is already established (PKCE flow — proxy exchanged the code).
+    // PKCE flow: proxy has already exchanged the code, so by mount time the session
+    // exists but PASSWORD_RECOVERY may never fire. Check for the aal1 recovery session.
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) setReady(true);
+      if (data.session?.user.aud === 'authenticated' && data.session.user.recovery_sent_at) {
+        setReady(true);
+      }
     });
     return () => subscription.unsubscribe();
   }, []);
