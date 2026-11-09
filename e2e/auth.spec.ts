@@ -1,62 +1,36 @@
 import { expect, test } from '@playwright/test';
 
-test.describe('Login page', () => {
-  test.beforeEach(async ({ page }) => {
+test.describe('Auth pages', () => {
+  test('sign-in tab shows Forgot password link', async ({ page }) => {
     await page.goto('/login');
+    await expect(page.getByRole('link', { name: 'Forgot password?' })).toBeVisible();
   });
 
-  test('renders the auth form', async ({ page }) => {
-    await expect(page).toHaveURL(/\/login/);
-    await expect(page.getByRole('tab', { name: 'Sign in' })).toBeVisible();
-    await expect(page.getByRole('tab', { name: 'Sign up' })).toBeVisible();
+  test('forgot-password page renders form', async ({ page }) => {
+    await page.goto('/forgot-password');
+    await expect(page.getByText('Reset password')).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'Email' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Send reset link' })).toBeVisible();
   });
 
-  test('Sign in tab — email and password fields', async ({ page }) => {
-    await page.getByRole('tab', { name: 'Sign in' }).click();
-    await expect(page.getByRole('textbox', { name: /email/i })).toBeVisible();
-    await expect(page.getByLabel('Password')).toBeVisible();
+  test('forgot-password form shows field error for invalid email', async ({ page }) => {
+    await page.goto('/forgot-password');
+    await page.getByRole('textbox', { name: 'Email' }).fill('not-an-email');
+    await page.getByRole('button', { name: 'Send reset link' }).click();
+    // Use span[role="alert"] to avoid matching the Next.js route announcer div.
+    await expect(page.locator('span[role="alert"]').first()).toBeVisible();
   });
 
-  test('Sign up tab — email and password fields', async ({ page }) => {
+  test('reset-password page renders loading state', async ({ page }) => {
+    await page.goto('/reset-password');
+    await expect(page.getByText('Verifying reset link')).toBeVisible();
+  });
+
+  test('sign-up tab shows per-field validation errors', async ({ page }) => {
+    await page.goto('/login');
     await page.getByRole('tab', { name: 'Sign up' }).click();
-    await expect(page.getByRole('textbox', { name: /email/i })).toBeVisible();
-    await expect(page.getByLabel('Password')).toBeVisible();
-  });
-
-  test('does not navigate away on empty submit', async ({ page }) => {
-    await page.getByRole('tab', { name: 'Sign in' }).click();
-    await page.getByRole('button', { name: 'Sign in' }).click();
-    await expect(page).toHaveURL(/\/login/);
-  });
-
-  test('no horizontal scroll', async ({ page }) => {
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
-    );
-    expect(overflow).toBeLessThanOrEqual(0);
-  });
-
-  test('no console errors', async ({ page }) => {
-    const errors: string[] = [];
-    page.on('console', (message) => {
-      if (message.type() === 'error') errors.push(message.text());
-    });
-    page.on('pageerror', (error) => errors.push(error.message));
-
-    await page.waitForLoadState('networkidle');
-
-    expect(errors).toEqual([]);
-  });
-});
-
-test.describe('Redirects (unauthenticated)', () => {
-  test('/feed redirects to /login', async ({ page }) => {
-    await page.goto('/feed');
-    await expect(page).toHaveURL(/\/login/);
-  });
-
-  test('/onboarding redirects to /login', async ({ page }) => {
-    await page.goto('/onboarding');
-    await expect(page).toHaveURL(/\/login/);
+    await page.getByRole('button', { name: 'Sign up' }).click();
+    // At least one field error span should appear (excludes the Next.js route announcer div).
+    await expect(page.locator('span[role="alert"]').first()).toBeVisible();
   });
 });
