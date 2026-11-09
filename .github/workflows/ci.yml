@@ -18,6 +18,13 @@ env:
   # Unit- и e2e-тесты не ходят в Claude, Voyage и Supabase, поэтому реальные ключи в CI не нужны.
   NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ci-dummy-publishable-key
+  # Server-side dummy values — real keys are not used in CI (no Claude/Voyage/Supabase calls)
+  ANTHROPIC_API_KEY: ci-dummy-anthropic-key
+  CLAUDE_MODEL_SMART: claude-sonnet-4-5
+  CLAUDE_MODEL_FAST: claude-haiku-4-5
+  VOYAGE_API_KEY: ci-dummy-voyage-key
+  VOYAGE_MODEL: voyage-3-lite
+  SUPABASE_SECRET_KEY: ci-dummy-supabase-secret
 
 jobs:
   check:
