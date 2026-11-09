@@ -6,6 +6,8 @@ import { Button } from '@/shared/ui/button';
 import { FormField } from '@/shared/ui/form-field';
 import { Input } from '@/shared/ui/input';
 
+import { type z } from 'zod';
+
 import { BasicInfoSchema, type BasicInfo } from '../model/schemas';
 
 interface Props {
@@ -15,7 +17,7 @@ interface Props {
 const GENDER_OPTIONS = ['Male', 'Female', 'Non-binary', 'Other'];
 const LOOKING_FOR_OPTIONS = ['Men', 'Women', 'Everyone'];
 
-type FieldErrors = Partial<Record<'name' | 'age' | 'gender' | 'looking_for' | 'city', string>>;
+type FieldErrors = Partial<Record<keyof z.infer<typeof BasicInfoSchema>, string>>;
 
 export function BasicInfoForm({ onSubmit }: Props) {
   const [name, setName] = useState('');
