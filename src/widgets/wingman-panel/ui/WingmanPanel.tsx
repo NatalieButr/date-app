@@ -145,14 +145,14 @@ export function WingmanPanel() {
         </Button>
       </form>
 
-      {state === 'running' && steps.length === 0 && (
+      {state === 'running' && steps.length === 0 ? (
         <div className="space-y-2">
           <Skeleton className="h-4 w-48" />
           <Skeleton className="h-4 w-64" />
         </div>
-      )}
+      ) : null}
 
-      {steps.length > 0 && (
+      {steps.length > 0 ? (
         <ol className="space-y-1 text-sm text-muted-foreground">
           {steps.map((step, i) => (
             <li key={i} className="flex items-center gap-2">
@@ -160,21 +160,21 @@ export function WingmanPanel() {
               <span>{step.label}</span>
             </li>
           ))}
-          {state === 'running' && <li className="animate-pulse">…</li>}
+          {state === 'running' ? <li className="animate-pulse">…</li> : null}
         </ol>
-      )}
+      ) : null}
 
-      {state === 'error' && (
+      {state === 'error' ? (
         <p className="rounded-md bg-destructive/10 p-3 text-sm text-destructive" role="alert">
           {errorMsg}
         </p>
-      )}
+      ) : null}
 
-      {result && (
+      {result ? (
         <div className="space-y-6">
           <p className="text-sm">{result.text}</p>
 
-          {result.profiles.length > 0 && (
+          {result.profiles.length > 0 ? (
             <section aria-label="Suggested profiles">
               <h2 className="mb-3 text-sm font-semibold">Suggested profiles</h2>
               <ul className="grid gap-3 sm:grid-cols-2">
@@ -184,16 +184,16 @@ export function WingmanPanel() {
                       {profile.name}, {profile.age}
                     </p>
                     <p className="text-muted-foreground">{profile.city}</p>
-                    {profile.bio && (
+                    {profile.bio ? (
                       <p className="mt-1 line-clamp-2 text-muted-foreground">{profile.bio}</p>
-                    )}
+                    ) : null}
                   </li>
                 ))}
               </ul>
             </section>
-          )}
+          ) : null}
 
-          {result.drafts.length > 0 && (
+          {result.drafts.length > 0 ? (
             <section aria-label="Message drafts">
               <h2 className="mb-3 text-sm font-semibold">Message drafts</h2>
               <ul className="space-y-3">
@@ -207,11 +207,11 @@ export function WingmanPanel() {
                       className="rounded-lg border bg-card p-3 text-sm shadow-sm"
                     >
                       <p className="mb-2">{draft.text}</p>
-                      {draftError && (
+                      {draftError ? (
                         <p className="mb-2 text-xs text-destructive" role="alert">
                           {draftError}
                         </p>
-                      )}
+                      ) : null}
                       <Button
                         size="sm"
                         variant={sent ? 'secondary' : 'default'}
@@ -225,9 +225,9 @@ export function WingmanPanel() {
                 })}
               </ul>
             </section>
-          )}
+          ) : null}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

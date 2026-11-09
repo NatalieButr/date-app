@@ -1,7 +1,7 @@
 import { Label } from '@/shared/ui/label';
 
 interface FormFieldProps {
-  id: string;
+  id?: string;
   label: string;
   error?: string | null;
   children: React.ReactElement;
