@@ -5,8 +5,8 @@ import { useEffect, useState, useTransition } from 'react';
 import { createSupabaseBrowserClient } from '@/shared/api/supabase/browser';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
+import { FormField } from '@/shared/ui/form-field';
 import { Input } from '@/shared/ui/input';
-import { Label } from '@/shared/ui/label';
 
 import { ResetPasswordSchema } from '../model/schemas';
 import { resetPassword } from '../server/actions';
@@ -90,8 +90,7 @@ function ResetForm() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="reset-password">New password</Label>
+          <FormField id="reset-password" label="New password" error={fieldErrors.password}>
             <Input
               id="reset-password"
               name="password"
@@ -99,14 +98,12 @@ function ResetForm() {
               autoComplete="new-password"
               aria-invalid={Boolean(fieldErrors.password)}
             />
-            {fieldErrors.password && (
-              <span role="alert" className="text-destructive text-sm">
-                {fieldErrors.password}
-              </span>
-            )}
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="reset-confirm-password">Confirm new password</Label>
+          </FormField>
+          <FormField
+            id="reset-confirm-password"
+            label="Confirm new password"
+            error={fieldErrors.confirmPassword}
+          >
             <Input
               id="reset-confirm-password"
               type="password"
@@ -115,17 +112,12 @@ function ResetForm() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               aria-invalid={Boolean(fieldErrors.confirmPassword)}
             />
-            {fieldErrors.confirmPassword && (
-              <span role="alert" className="text-destructive text-sm">
-                {fieldErrors.confirmPassword}
-              </span>
-            )}
-          </div>
-          {serverError && (
+          </FormField>
+          {serverError ? (
             <p role="alert" className="text-destructive text-sm">
               {serverError}
             </p>
-          )}
+          ) : null}
           <Button type="submit" disabled={isPending} className="w-full">
             {isPending ? 'Saving…' : 'Set password'}
           </Button>

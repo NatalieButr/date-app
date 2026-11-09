@@ -5,8 +5,8 @@ import { useState, useTransition } from 'react';
 
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
+import { FormField } from '@/shared/ui/form-field';
 import { Input } from '@/shared/ui/input';
-import { Label } from '@/shared/ui/label';
 
 import { ForgotPasswordSchema } from '../model/schemas';
 import { requestPasswordReset } from '../server/actions';
@@ -66,8 +66,7 @@ export function ForgotPasswordForm() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="forgot-email">Email</Label>
+          <FormField id="forgot-email" label="Email" error={emailError}>
             <Input
               id="forgot-email"
               name="email"
@@ -76,17 +75,12 @@ export function ForgotPasswordForm() {
               placeholder="you@example.com"
               aria-invalid={Boolean(emailError)}
             />
-            {emailError && (
-              <span role="alert" className="text-destructive text-sm">
-                {emailError}
-              </span>
-            )}
-          </div>
-          {serverError && (
+          </FormField>
+          {serverError ? (
             <p role="alert" className="text-destructive text-sm">
               {serverError}
             </p>
-          )}
+          ) : null}
           <Button type="submit" disabled={isPending} className="w-full">
             {isPending ? 'Sending…' : 'Send reset link'}
           </Button>
