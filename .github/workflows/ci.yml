@@ -25,6 +25,7 @@ env:
   VOYAGE_API_KEY: ci-dummy-voyage-key
   VOYAGE_MODEL: voyage-3-lite
   SUPABASE_SECRET_KEY: ci-dummy-supabase-secret
+  SITE_URL: http://localhost:3000
 
 jobs:
   check:
