@@ -6,7 +6,7 @@ test.describe('Home page', () => {
 
     await expect(page).toHaveTitle(/Spark/);
     await expect(page.getByRole('heading', { level: 1, name: 'Spark' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Get started' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Sign in' })).toBeVisible();
   });
 
   test('no horizontal scroll', async ({ page }) => {
