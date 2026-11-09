@@ -1,5 +1,7 @@
 import 'server-only';
 
+import { z } from 'zod';
+
 import { createSupabaseAdminClient } from '@/shared/api/supabase/admin';
 
 // Fallback constants (USD per 1M tokens) used before the DB cache warms up or when DB is unavailable.
@@ -9,7 +11,8 @@ const FALLBACK_TIER_PRICING: Record<'smart' | 'fast', TierPricing> = {
   fast: { inputPerMtk: 0.8, outputPerMtk: 4.0, cacheWritePerMtk: 1.0, cacheReadPerMtk: 0.08 },
 };
 
-const FALLBACK_VOYAGE_PRICE_PER_MTK = 0.06;
+// TODO(spec): add Voyage pricing to ai_model_pricing table so it can be updated without a redeploy.
+const VOYAGE_PRICE_PER_MTK = 0.06;
 
 interface TierPricing {
   inputPerMtk: number;
@@ -17,6 +20,14 @@ interface TierPricing {
   cacheWritePerMtk: number;
   cacheReadPerMtk: number;
 }
+
+const PricingRowSchema = z.object({
+  tier: z.enum(['smart', 'fast']),
+  input_per_mtk: z.coerce.number().positive().finite(),
+  output_per_mtk: z.coerce.number().positive().finite(),
+  cache_write_per_mtk: z.coerce.number().positive().finite(),
+  cache_read_per_mtk: z.coerce.number().positive().finite(),
+});
 
 const TTL_MS = 5 * 60 * 1000;
 
@@ -40,19 +51,29 @@ async function refreshPricingCache(): Promise<void> {
 
     if (error || !data || data.length < 2) throw error ?? new Error('incomplete data');
 
-    const byTier = Object.fromEntries(
-      data.map((row) => [
-        row.tier,
-        {
-          inputPerMtk: Number(row.input_per_mtk),
-          outputPerMtk: Number(row.output_per_mtk),
-          cacheWritePerMtk: Number(row.cache_write_per_mtk),
-          cacheReadPerMtk: Number(row.cache_read_per_mtk),
-        },
-      ]),
-    ) as Record<'smart' | 'fast', TierPricing>;
+    const validated = data.reduce<Partial<Record<'smart' | 'fast', TierPricing>>>((acc, row) => {
+      const result = PricingRowSchema.safeParse(row);
+      if (!result.success) {
+        console.warn(`[pricing] Invalid pricing row, skipping: ${result.error.message}`);
+        return acc;
+      }
+      const { tier, input_per_mtk, output_per_mtk, cache_write_per_mtk, cache_read_per_mtk } =
+        result.data;
+      acc[tier] = {
+        inputPerMtk: input_per_mtk,
+        outputPerMtk: output_per_mtk,
+        cacheWritePerMtk: cache_write_per_mtk,
+        cacheReadPerMtk: cache_read_per_mtk,
+      };
+      return acc;
+    }, {});
 
-    cachedPricing = { ...byTier, expiresAt: Date.now() + TTL_MS };
+    if (!validated.smart || !validated.fast) throw new Error('incomplete validated pricing data');
+    cachedPricing = {
+      smart: validated.smart,
+      fast: validated.fast,
+      expiresAt: Date.now() + TTL_MS,
+    };
   } catch {
     console.warn('[pricing] Failed to load pricing from DB, using fallback constants');
   } finally {
@@ -64,6 +85,7 @@ function getTierPricing(tier: 'smart' | 'fast'): TierPricing {
   if (!cachedPricing || cachedPricing.expiresAt <= Date.now()) {
     // Trigger a background refresh; return fallback for this call.
     refreshPricingCache().catch(() => {});
+    // SWR: return stale data for this call while refresh runs in background.
     return cachedPricing?.[tier] ?? FALLBACK_TIER_PRICING[tier];
   }
   return cachedPricing[tier];
@@ -88,7 +110,7 @@ export function calculateCost(tier: 'smart' | 'fast', usage: TokenUsage): number
 }
 
 export function calculateEmbeddingCost(tokens: number): number {
-  return (tokens / 1_000_000) * FALLBACK_VOYAGE_PRICE_PER_MTK;
+  return (tokens / 1_000_000) * VOYAGE_PRICE_PER_MTK;
 }
 
 // Exported for testing only.
