@@ -101,11 +101,11 @@ export function AdminDashboard({ initial }: AdminDashboardProps) {
         </Button>
       </form>
 
-      {error && (
+      {error ? (
         <p className="rounded-md bg-destructive/10 p-3 text-sm text-destructive" role="alert">
           {error}
         </p>
-      )}
+      ) : null}
 
       {loading ? (
         <div className="space-y-2">

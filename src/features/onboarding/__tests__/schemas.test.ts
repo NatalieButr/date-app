@@ -7,6 +7,53 @@ import {
   SaveProfileSchema,
 } from '../model/schemas';
 
+describe('BasicInfoSchema — per-field validation (BasicInfoForm behaviour)', () => {
+  it('extracts per-field errors via flatten().fieldErrors for an empty submit', () => {
+    const result = BasicInfoSchema.safeParse({
+      name: '',
+      age: NaN,
+      gender: '',
+      looking_for: [],
+      city: '',
+    });
+    expect(result.success).toBe(false);
+    if (result.success) return;
+    const { fieldErrors } = result.error.flatten();
+    expect(fieldErrors.name).toBeDefined();
+    expect(fieldErrors.age).toBeDefined();
+    expect(fieldErrors.gender).toBeDefined();
+    expect(fieldErrors.looking_for).toBeDefined();
+    expect(fieldErrors.city).toBeDefined();
+  });
+
+  it('succeeds for valid data (no per-field errors)', () => {
+    const result = BasicInfoSchema.safeParse({
+      name: 'Alice',
+      age: 25,
+      gender: 'Female',
+      looking_for: ['Men'],
+      city: 'Warsaw',
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('reports only the failing field when only one is invalid', () => {
+    const result = BasicInfoSchema.safeParse({
+      name: 'Alice',
+      age: 15, // too young
+      gender: 'Female',
+      looking_for: ['Men'],
+      city: 'Warsaw',
+    });
+    expect(result.success).toBe(false);
+    if (result.success) return;
+    const { fieldErrors } = result.error.flatten();
+    expect(fieldErrors.age).toBeDefined();
+    expect(fieldErrors.name).toBeUndefined();
+    expect(fieldErrors.gender).toBeUndefined();
+  });
+});
+
 describe('BasicInfoSchema', () => {
   it('accepts valid input', () => {
     const result = BasicInfoSchema.safeParse({
@@ -94,7 +141,13 @@ describe('BioOptionsSchema', () => {
 describe('SaveProfileSchema', () => {
   it('accepts valid save payload', () => {
     const result = SaveProfileSchema.safeParse({
-      basicInfo: { name: 'Alice', age: 25, gender: 'female', looking_for: ['male'], city: 'Warsaw' },
+      basicInfo: {
+        name: 'Alice',
+        age: 25,
+        gender: 'female',
+        looking_for: ['male'],
+        city: 'Warsaw',
+      },
       extracted: {
         interests: ['hiking', 'reading', 'coding'],
         values: ['honesty', 'kindness'],
