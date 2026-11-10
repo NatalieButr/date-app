@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useState } from 'react';
 
+import { useForm } from '@/shared/lib/useForm';
 import { createSupabaseBrowserClient } from '@/shared/api/supabase/browser';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
@@ -50,37 +51,16 @@ export function ResetPasswordForm() {
 }
 
 function ResetForm() {
-  const [isPending, startTransition] = useTransition();
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [fieldErrors, setFieldErrors] = useState<
-    Partial<Record<'password' | 'confirmPassword', string>>
-  >({});
-  const [serverError, setServerError] = useState<string | null>(null);
-
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const result = ResetPasswordSchema.safeParse({
-      password: data.get('password'),
-      confirmPassword,
-    });
-    if (!result.success) {
-      const flat = result.error.flatten().fieldErrors;
-      setFieldErrors({
-        password: flat.password?.[0],
-        confirmPassword: flat.confirmPassword?.[0],
-      });
-      return;
-    }
-    setFieldErrors({});
-    setServerError(null);
-    // Append confirmPassword so the server action can re-validate the match.
-    data.set('confirmPassword', confirmPassword);
-    startTransition(async () => {
-      const error = await resetPassword(null, data);
-      if (error) setServerError(error);
-    });
-  }
+  const form = useForm({
+    schema: ResetPasswordSchema,
+    onSubmit: async (data) => {
+      // confirmPassword validates client-side only — append to FormData so server action can re-verify
+      const fd = new FormData();
+      fd.set('password', data.password);
+      fd.set('confirmPassword', data.confirmPassword);
+      return resetPassword(null, fd);
+    },
+  });
 
   return (
     <Card className="w-full max-w-sm">
@@ -89,37 +69,39 @@ function ResetForm() {
         <CardDescription>Choose a strong password for your account.</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
-          <FormField id="reset-password" label="New password" error={fieldErrors.password}>
+        <form onSubmit={form.handleSubmit} noValidate className="flex flex-col gap-4">
+          <FormField id="reset-password" label="New password" error={form.fieldErrors.password}>
             <Input
               id="reset-password"
               name="password"
               type="password"
               autoComplete="new-password"
-              aria-invalid={Boolean(fieldErrors.password)}
+              value={form.values.password ?? ''}
+              onChange={(e) => form.setValue('password', e.target.value)}
+              aria-invalid={Boolean(form.fieldErrors.password)}
             />
           </FormField>
           <FormField
             id="reset-confirm-password"
             label="Confirm new password"
-            error={fieldErrors.confirmPassword}
+            error={form.fieldErrors.confirmPassword}
           >
             <Input
               id="reset-confirm-password"
               type="password"
               autoComplete="new-password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              aria-invalid={Boolean(fieldErrors.confirmPassword)}
+              value={form.values.confirmPassword ?? ''}
+              onChange={(e) => form.setValue('confirmPassword', e.target.value)}
+              aria-invalid={Boolean(form.fieldErrors.confirmPassword)}
             />
           </FormField>
-          {serverError ? (
+          {form.serverError ? (
             <p role="alert" className="text-destructive text-sm">
-              {serverError}
+              {form.serverError}
             </p>
           ) : null}
-          <Button type="submit" disabled={isPending} className="w-full">
-            {isPending ? 'Saving…' : 'Set password'}
+          <Button type="submit" disabled={form.isPending} className="w-full">
+            {form.isPending ? 'Saving…' : 'Set password'}
           </Button>
         </form>
       </CardContent>
