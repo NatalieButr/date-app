@@ -23,14 +23,14 @@ export function BasicInfoForm({ onSubmit }: Props) {
     },
   });
 
-  const lookingFor = (form.values.looking_for ?? []) as string[];
+  const lookingFor = form.values.looking_for ?? [];
 
   return (
     <form onSubmit={form.handleSubmit} noValidate className="flex flex-col gap-5">
       <FormField id="basic-name" label="Your name" error={form.fieldErrors.name}>
         <Input
           id="basic-name"
-          value={(form.values.name as string | undefined) ?? ''}
+          value={form.values.name ?? ''}
           onChange={(e) => form.setValue('name', e.target.value)}
           placeholder="Alice"
           maxLength={60}
@@ -42,7 +42,7 @@ export function BasicInfoForm({ onSubmit }: Props) {
         <Input
           id="basic-age"
           type="number"
-          value={(form.values.age as number | undefined) ?? ''}
+          value={form.values.age ?? ''}
           onChange={(e) =>
             form.setValue('age', e.target.value === '' ? '' : Number(e.target.value))
           }
@@ -99,7 +99,7 @@ export function BasicInfoForm({ onSubmit }: Props) {
       <FormField id="basic-city" label="City" error={form.fieldErrors.city}>
         <Input
           id="basic-city"
-          value={(form.values.city as string | undefined) ?? ''}
+          value={form.values.city ?? ''}
           onChange={(e) => form.setValue('city', e.target.value)}
           placeholder="Warsaw"
           maxLength={80}

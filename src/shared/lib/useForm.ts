@@ -39,12 +39,14 @@ export function useForm<S extends z.ZodType>({ schema, defaultValues, onSubmit }
           (errors as Record<string, string>)[key] = msgs[0]!;
         }
       }
+      setServerError(null);
       setFieldErrors(errors);
       return;
     }
     setFieldErrors({});
     setServerError(null);
     startTransition(async () => {
+      // z.ZodType generic bound doesn't narrow safeParse output to z.infer<S>; cast is safe.
       const error = await onSubmit(result.data as z.infer<S>);
       if (error) setServerError(error);
     });

@@ -13,7 +13,8 @@ export function FormField({ id, label, error, children }: FormFieldProps) {
   // When no id (e.g. pill-button groups), use an explicit group role with aria-labelledby
   // so screen readers announce the question before each button.
   const labelId = id ? undefined : `ff-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-lbl`;
-  const errorId = id ? `${id}-error` : undefined;
+  // Derive errorId for pill-button groups from labelId so aria-describedby still works.
+  const errorId = id ? `${id}-error` : labelId ? labelId.replace(/-lbl$/, '-err') : undefined;
 
   // Inject aria-describedby into the direct child input when there's an error,
   // so screen readers read the error message when the user focuses the field.

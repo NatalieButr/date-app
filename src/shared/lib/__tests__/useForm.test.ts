@@ -19,7 +19,7 @@ describe('useForm', () => {
     const onSubmit = makeSubmit();
     const { result } = renderHook(() => useForm({ schema: TestSchema, onSubmit }));
 
-    act(() => {
+    await act(async () => {
       result.current.setValue('email', 'alice@example.com');
       result.current.setValue('name', 'Alice');
     });
@@ -50,7 +50,7 @@ describe('useForm', () => {
     const onSubmit = makeSubmit('Something went wrong');
     const { result } = renderHook(() => useForm({ schema: TestSchema, onSubmit }));
 
-    act(() => {
+    await act(async () => {
       result.current.setValue('email', 'alice@example.com');
       result.current.setValue('name', 'Alice');
     });
@@ -66,7 +66,7 @@ describe('useForm', () => {
     const onSubmit = makeSubmit('err');
     const { result } = renderHook(() => useForm({ schema: TestSchema, onSubmit }));
 
-    act(() => {
+    await act(async () => {
       result.current.setValue('email', 'alice@example.com');
       result.current.setValue('name', 'Alice');
     });
@@ -77,7 +77,7 @@ describe('useForm', () => {
 
     expect(result.current.serverError).toBe('err');
 
-    act(() => {
+    await act(async () => {
       result.current.reset();
     });
 
