@@ -17,6 +17,7 @@ const LOOKING_FOR_OPTIONS = ['Men', 'Women', 'Everyone'];
 export function BasicInfoForm({ onSubmit }: Props) {
   const form = useForm({
     schema: BasicInfoSchema,
+    defaultValues: { name: '', age: undefined, gender: '', looking_for: [], city: '' },
     onSubmit: async (data) => {
       onSubmit(data);
       return null;

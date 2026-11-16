@@ -32,6 +32,7 @@ export function AuthForm() {
 function SignInCard() {
   const form = useForm({
     schema: LoginSchema,
+    defaultValues: { email: '', password: '' },
     onSubmit: async (data) => {
       const fd = new FormData();
       fd.set('email', data.email);
@@ -94,6 +95,7 @@ function SignInCard() {
 function SignUpCard() {
   const form = useForm({
     schema: SignUpFormSchema,
+    defaultValues: { email: '', password: '', confirmPassword: '' },
     onSubmit: async (data) => {
       // confirmPassword is validated client-side only — never sent to the server
       const fd = new FormData();

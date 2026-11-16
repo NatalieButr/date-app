@@ -22,7 +22,10 @@ export function useForm<S extends z.ZodType>({ schema, defaultValues, onSubmit }
   const [serverError, setServerError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  function setValue(field: keyof z.infer<S>, value: unknown) {
+  // `value` accepts `z.infer<S>[K] | ''` so numeric fields can be cleared to ''
+  // (the age input temporarily holds '' before the user types a number).
+  // The loose union is intentional; Zod catches a wrong type at submit time.
+  function setValue<K extends keyof z.infer<S>>(field: K, value: z.infer<S>[K] | '') {
     setValues((prev) => ({ ...prev, [field]: value }));
   }
 
@@ -36,6 +39,8 @@ export function useForm<S extends z.ZodType>({ schema, defaultValues, onSubmit }
       const errors: FieldErrors = {};
       for (const [key, msgs] of Object.entries(flat)) {
         if (msgs && msgs.length > 0) {
+          // FieldErrors keys are keyof z.infer<S>; we iterate Object.entries, so the
+          // key is string here. The cast is safe: every key came from the schema output.
           (errors as Record<string, string>)[key] = msgs[0]!;
         }
       }
@@ -53,6 +58,7 @@ export function useForm<S extends z.ZodType>({ schema, defaultValues, onSubmit }
   }
 
   function reset() {
+    // {} satisfies Partial<z.infer<S>> — all fields optional by definition. Same as initial state.
     setValues((defaultValues ?? {}) as InferredValues);
     setFieldErrors({});
     setServerError(null);

@@ -17,6 +17,7 @@ export function ForgotPasswordForm() {
 
   const form = useForm({
     schema: ForgotPasswordSchema,
+    defaultValues: { email: '' },
     onSubmit: async (data) => {
       const fd = new FormData();
       fd.set('email', data.email);

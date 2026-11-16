@@ -53,6 +53,7 @@ export function ResetPasswordForm() {
 function ResetForm() {
   const form = useForm({
     schema: ResetPasswordSchema,
+    defaultValues: { password: '', confirmPassword: '' },
     onSubmit: async (data) => {
       // confirmPassword validates client-side only — append to FormData so server action can re-verify
       const fd = new FormData();

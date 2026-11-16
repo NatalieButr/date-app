@@ -25,6 +25,7 @@ describe('useForm', () => {
     });
 
     await act(async () => {
+      // We only need preventDefault; the cast bypasses the full SyntheticEvent shape.
       result.current.handleSubmit({ preventDefault: vi.fn() } as unknown as React.SyntheticEvent);
     });
 
@@ -38,6 +39,7 @@ describe('useForm', () => {
     const { result } = renderHook(() => useForm({ schema: TestSchema, onSubmit }));
 
     await act(async () => {
+      // We only need preventDefault; the cast bypasses the full SyntheticEvent shape.
       result.current.handleSubmit({ preventDefault: vi.fn() } as unknown as React.SyntheticEvent);
     });
 
@@ -56,6 +58,7 @@ describe('useForm', () => {
     });
 
     await act(async () => {
+      // We only need preventDefault; the cast bypasses the full SyntheticEvent shape.
       result.current.handleSubmit({ preventDefault: vi.fn() } as unknown as React.SyntheticEvent);
     });
 
@@ -72,6 +75,7 @@ describe('useForm', () => {
     });
 
     await act(async () => {
+      // We only need preventDefault; the cast bypasses the full SyntheticEvent shape.
       result.current.handleSubmit({ preventDefault: vi.fn() } as unknown as React.SyntheticEvent);
     });
 

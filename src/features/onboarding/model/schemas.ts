@@ -2,11 +2,11 @@ import { z } from 'zod';
 
 // --- Basic info form (step 1) ---
 export const BasicInfoSchema = z.object({
-  name: z.string().min(1).max(60),
+  name: z.string().trim().min(1).max(60),
   age: z.number().int().min(18).max(99),
   gender: z.string().min(1).max(40),
   looking_for: z.array(z.string().min(1)).min(1).max(5),
-  city: z.string().min(1).max(80),
+  city: z.string().trim().min(1).max(80),
 });
 export type BasicInfo = z.infer<typeof BasicInfoSchema>;
 
@@ -35,12 +35,14 @@ export type ProfileExtract = z.infer<typeof ProfileExtractSchema>;
 
 // --- Bio options (step 4) ---
 export const BioOptionsSchema = z.object({
-  options: z.array(
-    z.object({
-      tone: z.string().min(1).max(40),
-      text: z.string().min(1).max(500),
-    }),
-  ).length(3),
+  options: z
+    .array(
+      z.object({
+        tone: z.string().min(1).max(40),
+        text: z.string().min(1).max(500),
+      }),
+    )
+    .length(3),
 });
 export type BioOptions = z.infer<typeof BioOptionsSchema>;
 
