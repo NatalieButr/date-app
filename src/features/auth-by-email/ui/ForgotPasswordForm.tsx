@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 
+import { useForm } from '@/shared/lib/useForm';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
 import { FormField } from '@/shared/ui/form-field';
@@ -12,10 +13,19 @@ import { ForgotPasswordSchema } from '../model/schemas';
 import { requestPasswordReset } from '../server/actions';
 
 export function ForgotPasswordForm() {
-  const [isPending, startTransition] = useTransition();
-  const [emailError, setEmailError] = useState<string | null>(null);
-  const [serverError, setServerError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+
+  const form = useForm({
+    schema: ForgotPasswordSchema,
+    defaultValues: { email: '' },
+    onSubmit: async (data) => {
+      const fd = new FormData();
+      fd.set('email', data.email);
+      const error = await requestPasswordReset(null, fd);
+      if (!error) setSubmitted(true);
+      return error;
+    },
+  });
 
   if (submitted) {
     return (
@@ -38,26 +48,6 @@ export function ForgotPasswordForm() {
     );
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const result = ForgotPasswordSchema.safeParse({ email: data.get('email') });
-    if (!result.success) {
-      setEmailError(result.error.issues[0]?.message ?? 'Invalid email');
-      return;
-    }
-    setEmailError(null);
-    setServerError(null);
-    startTransition(async () => {
-      const error = await requestPasswordReset(null, data);
-      if (error) {
-        setServerError(error);
-      } else {
-        setSubmitted(true);
-      }
-    });
-  }
-
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
@@ -65,24 +55,26 @@ export function ForgotPasswordForm() {
         <CardDescription>Enter your email and we&apos;ll send a reset link.</CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
-          <FormField id="forgot-email" label="Email" error={emailError}>
+        <form onSubmit={form.handleSubmit} noValidate className="flex flex-col gap-4">
+          <FormField id="forgot-email" label="Email" error={form.fieldErrors.email}>
             <Input
               id="forgot-email"
               name="email"
               type="email"
               autoComplete="email"
               placeholder="you@example.com"
-              aria-invalid={Boolean(emailError)}
+              value={form.values.email ?? ''}
+              onChange={(e) => form.setValue('email', e.target.value)}
+              aria-invalid={Boolean(form.fieldErrors.email)}
             />
           </FormField>
-          {serverError ? (
+          {form.serverError ? (
             <p role="alert" className="text-destructive text-sm">
-              {serverError}
+              {form.serverError}
             </p>
           ) : null}
-          <Button type="submit" disabled={isPending} className="w-full">
-            {isPending ? 'Sending…' : 'Send reset link'}
+          <Button type="submit" disabled={form.isPending} className="w-full">
+            {form.isPending ? 'Sending…' : 'Send reset link'}
           </Button>
           <Link
             href="/login"

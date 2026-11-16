@@ -2,11 +2,7 @@
 
 > AI-powered dating app — a portfolio project showcasing 6 distinct AI engineering skills built on Claude.
 
-**[Live demo →](https://spark-date-app.vercel.app)** · **[Demo video (90s) →](#)**
-
-<!-- GIF: swipe flow + AI explanation + icebreaker generation -->
-
-![Spark demo](docs/demo.gif)
+**[Live demo →](https://date-app-spark.vercel.app)**
 
 ---
 
@@ -153,7 +149,7 @@ The Wingman agent never performs irreversible actions (sending a message, sugges
 | Embeddings   | Voyage AI + pgvector                                                                        |
 | Database     | Supabase (Postgres, Auth, Realtime)                                                         |
 | Architecture | Feature-Sliced Design + Steiger linter                                                      |
-| Tests        | Vitest (97 tests) · Playwright e2e                                                          |
+| Tests        | Vitest (112 tests) · Playwright e2e                                                         |
 | Deploy       | Vercel (push to `main`)                                                                     |
 
 ---

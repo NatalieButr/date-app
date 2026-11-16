@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useForm } from '@/shared/lib/useForm';
 import { Button } from '@/shared/ui/button';
+import { FormField } from '@/shared/ui/form-field';
 import { Input } from '@/shared/ui/input';
-import { Label } from '@/shared/ui/label';
+
 import { BasicInfoSchema, type BasicInfo } from '../model/schemas';
 
 interface Props {
@@ -14,74 +15,54 @@ const GENDER_OPTIONS = ['Male', 'Female', 'Non-binary', 'Other'];
 const LOOKING_FOR_OPTIONS = ['Men', 'Women', 'Everyone'];
 
 export function BasicInfoForm({ onSubmit }: Props) {
-  const [name, setName] = useState('');
-  const [age, setAge] = useState('');
-  const [gender, setGender] = useState('');
-  const [lookingFor, setLookingFor] = useState<string[]>([]);
-  const [city, setCity] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const form = useForm({
+    schema: BasicInfoSchema,
+    defaultValues: { name: '', age: undefined, gender: '', looking_for: [], city: '' },
+    onSubmit: async (data) => {
+      onSubmit(data);
+      return null;
+    },
+  });
 
-  function toggleLookingFor(val: string) {
-    setLookingFor((prev) =>
-      prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val],
-    );
-  }
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    const parsed = BasicInfoSchema.safeParse({
-      name: name.trim(),
-      age: Number(age),
-      gender,
-      looking_for: lookingFor,
-      city: city.trim(),
-    });
-    if (!parsed.success) {
-      setError(parsed.error.issues[0]?.message ?? 'Please fill all fields correctly');
-      return;
-    }
-    onSubmit(parsed.data);
-  }
+  const lookingFor = form.values.looking_for ?? [];
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="name">Your name</Label>
+    <form onSubmit={form.handleSubmit} noValidate className="flex flex-col gap-5">
+      <FormField id="basic-name" label="Your name" error={form.fieldErrors.name}>
         <Input
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          id="basic-name"
+          value={form.values.name ?? ''}
+          onChange={(e) => form.setValue('name', e.target.value)}
           placeholder="Alice"
           maxLength={60}
-          required
+          aria-invalid={Boolean(form.fieldErrors.name)}
         />
-      </div>
+      </FormField>
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="age">Age</Label>
+      <FormField id="basic-age" label="Age" error={form.fieldErrors.age}>
         <Input
-          id="age"
+          id="basic-age"
           type="number"
-          value={age}
-          onChange={(e) => setAge(e.target.value)}
+          value={form.values.age ?? ''}
+          onChange={(e) =>
+            form.setValue('age', e.target.value === '' ? '' : Number(e.target.value))
+          }
           placeholder="25"
           min={18}
           max={99}
-          required
+          aria-invalid={Boolean(form.fieldErrors.age)}
         />
-      </div>
+      </FormField>
 
-      <div className="flex flex-col gap-1.5">
-        <Label>Gender</Label>
+      <FormField label="Gender" error={form.fieldErrors.gender}>
         <div className="flex flex-wrap gap-2">
           {GENDER_OPTIONS.map((g) => (
             <button
               key={g}
               type="button"
-              onClick={() => setGender(g)}
+              onClick={() => form.setValue('gender', g)}
               className={`rounded-full border px-4 py-1.5 text-sm transition-colors ${
-                gender === g
+                form.values.gender === g
                   ? 'border-primary bg-primary text-primary-foreground'
                   : 'border-border bg-background hover:border-primary/50'
               }`}
@@ -90,16 +71,20 @@ export function BasicInfoForm({ onSubmit }: Props) {
             </button>
           ))}
         </div>
-      </div>
+      </FormField>
 
-      <div className="flex flex-col gap-1.5">
-        <Label>Show me</Label>
+      <FormField label="Show me" error={form.fieldErrors.looking_for}>
         <div className="flex flex-wrap gap-2">
           {LOOKING_FOR_OPTIONS.map((opt) => (
             <button
               key={opt}
               type="button"
-              onClick={() => toggleLookingFor(opt)}
+              onClick={() => {
+                const next = lookingFor.includes(opt)
+                  ? lookingFor.filter((v) => v !== opt)
+                  : [...lookingFor, opt];
+                form.setValue('looking_for', next);
+              }}
               className={`rounded-full border px-4 py-1.5 text-sm transition-colors ${
                 lookingFor.includes(opt)
                   ? 'border-primary bg-primary text-primary-foreground'
@@ -110,21 +95,18 @@ export function BasicInfoForm({ onSubmit }: Props) {
             </button>
           ))}
         </div>
-      </div>
+      </FormField>
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="city">City</Label>
+      <FormField id="basic-city" label="City" error={form.fieldErrors.city}>
         <Input
-          id="city"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
+          id="basic-city"
+          value={form.values.city ?? ''}
+          onChange={(e) => form.setValue('city', e.target.value)}
           placeholder="Warsaw"
           maxLength={80}
-          required
+          aria-invalid={Boolean(form.fieldErrors.city)}
         />
-      </div>
-
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      </FormField>
 
       <Button type="submit" className="w-full">
         Continue
