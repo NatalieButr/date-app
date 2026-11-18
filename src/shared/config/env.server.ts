@@ -28,6 +28,10 @@ const ServerEnvSchema = z.object({
     .optional()
     .transform((v) => v || undefined),
   SITE_URL: z.string().url().min(1),
+  // Enables /match-modal-test for e2e dialog accessibility tests (KAN-31).
+  // Set to any non-empty string to activate; playwright.config.ts does this automatically.
+  // Not set in production deployments, so the route returns 404 there.
+  USE_TEST_ROUTES: z.string().optional(),
 });
 
 export type ServerEnv = z.infer<typeof ServerEnvSchema>;

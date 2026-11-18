@@ -652,6 +652,7 @@ SITE_URL=                      # полный origin для email-ссылок (
 ADMIN_EMAILS=
 DEMO_USER_EMAIL=
 DEMO_USER_PASSWORD=
+USE_TEST_ROUTES=               # set to any non-empty value to enable /match-modal-test (e2e only)
 ```
 
 `.env.example` поддерживается в актуальном состоянии; новые переменные добавляются в `shared/config/env.ts` и сюда.

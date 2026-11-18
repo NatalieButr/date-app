@@ -13,7 +13,9 @@ export default defineConfig({
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,
   workers: isCI ? 1 : undefined,
-  reporter: isCI ? [['github'], ['html', { open: 'never' }]] : [['list'], ['html', { open: 'never' }]],
+  reporter: isCI
+    ? [['github'], ['html', { open: 'never' }]]
+    : [['list'], ['html', { open: 'never' }]],
   use: {
     baseURL,
     trace: 'on-first-retry',
@@ -32,5 +34,8 @@ export default defineConfig({
         url: baseURL,
         reuseExistingServer: !isCI,
         timeout: 120_000,
+        // Enables /match-modal-test for e2e dialog accessibility tests (KAN-31).
+        // The route calls notFound() unless this var is set, so it is unreachable in production.
+        env: { USE_TEST_ROUTES: '1' },
       },
 });
