@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 
 import { Button } from '@/shared/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/shared/ui/dialog';
 
 interface Props {
   matchId: string;
@@ -14,27 +15,32 @@ export function MatchModal({ matchId, otherName, onClose }: Props) {
   const router = useRouter();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="flex flex-col items-center gap-6 rounded-2xl bg-background p-8 text-center shadow-xl max-w-xs w-full">
-        <div className="text-5xl">🎉</div>
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
+      <DialogContent
+        className="flex flex-col items-center gap-6 text-center max-w-xs p-8"
+        showCloseButton={false}
+      >
+        <div className="text-5xl" aria-hidden>
+          🎉
+        </div>
         <div className="flex flex-col gap-1">
-          <h2 className="text-2xl font-bold">It&apos;s a Match!</h2>
-          <p className="text-muted-foreground text-sm">
-            You and {otherName} liked each other.
-          </p>
+          <DialogTitle className="text-2xl font-bold">It&apos;s a Match!</DialogTitle>
+          <DialogDescription>You and {otherName} liked each other.</DialogDescription>
         </div>
         <div className="flex flex-col gap-2 w-full">
-          <Button
-            onClick={() => router.push(`/chat/${matchId}`)}
-            className="w-full"
-          >
+          <Button onClick={() => router.push(`/chat/${matchId}`)} className="w-full">
             Send a message
           </Button>
           <Button variant="outline" onClick={onClose} className="w-full">
             Keep swiping
           </Button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

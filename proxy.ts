@@ -5,7 +5,16 @@ import { updateSession } from '@/shared/api/supabase/proxy';
 import { publicEnv } from '@/shared/config/env.public';
 import type { Database } from '@/shared/api/supabase/database.types';
 
-const PUBLIC_PATHS = ['/', '/login', '/forgot-password', '/reset-password'];
+const PUBLIC_PATHS = [
+  '/',
+  '/login',
+  '/forgot-password',
+  '/reset-password',
+  // /match-modal-test is a test-only route; only expose it when USE_TEST_ROUTES is set
+  // (playwright.config.ts webServer.env sets this during e2e runs). In production the
+  // var is absent and the route is not public — unauthenticated requests redirect to /login.
+  ...(process.env.USE_TEST_ROUTES ? ['/match-modal-test'] : []),
+];
 
 function isPublicPath(pathname: string): boolean {
   // API routes handle their own auth — do not redirect, let them return 401/403
