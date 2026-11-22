@@ -69,17 +69,20 @@ export function OnboardingChat({ messages, onMessagesChange, onDone, basicInfo, 
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-3 max-h-96 overflow-y-auto pr-1">
+      <div
+        role="log"
+        aria-label="Conversation"
+        aria-live="polite"
+        aria-busy={streaming}
+        className="flex flex-col gap-3 max-h-96 overflow-y-auto pr-1"
+      >
         {messages.length === 0 && (
           <p className="text-sm text-muted-foreground text-center py-8">
             Starting your onboarding chat...
           </p>
         )}
         {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
+          <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div
               className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${
                 msg.role === 'user'
