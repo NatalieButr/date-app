@@ -55,6 +55,7 @@ export function BioPicker({ options, chosenBio, onChoose, onConfirm, disabled }:
         <label htmlFor="bio-picker-textarea" className="text-xs font-medium text-muted-foreground">
           Edit your bio
         </label>
+        {/* id is static — BioPicker is only ever mounted once per page (onboarding step 4) */}
         <Textarea
           id="bio-picker-textarea"
           value={edited}
