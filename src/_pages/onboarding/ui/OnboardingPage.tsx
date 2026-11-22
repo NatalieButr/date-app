@@ -26,18 +26,23 @@ export function OnboardingPage() {
     useOnboarding();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
-  const handleChatDone = useCallback(async (finalMessages: ChatMessage[]) => {
-    goToStep(3);
-    try {
-      const extracted = await extractProfile(finalMessages, state.basicInfo ?? undefined);
-      setExtracted(extracted);
-      const bioOpts = await generateBio(finalMessages, state.basicInfo ?? undefined);
-      setBioOptions(bioOpts);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to analyze your answers. Please try again.');
-      goToStep(2);
-    }
-  }, [goToStep, setExtracted, setBioOptions, setError, state.basicInfo]);
+  const handleChatDone = useCallback(
+    async (finalMessages: ChatMessage[]) => {
+      goToStep(3);
+      try {
+        const extracted = await extractProfile(finalMessages, state.basicInfo ?? undefined);
+        setExtracted(extracted);
+        const bioOpts = await generateBio(finalMessages, state.basicInfo ?? undefined);
+        setBioOptions(bioOpts);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : 'Failed to analyze your answers. Please try again.',
+        );
+        goToStep(2);
+      }
+    },
+    [goToStep, setExtracted, setBioOptions, setError, state.basicInfo],
+  );
 
   const handleSave = useCallback(async () => {
     if (!state.basicInfo || !state.extracted || !state.chosenBio) return;
@@ -53,11 +58,22 @@ export function OnboardingPage() {
     }
   }, [state.basicInfo, state.extracted, state.chosenBio, setError]);
 
+  // step 3 is "Analyzing" (background async, no user action) — it shares display step 2
+  const displayStep = state.step === 3 ? 2 : state.step === 4 ? 3 : state.step;
+
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
         <div className="mb-8">
-          <div className="flex items-center gap-2 mb-2">
+          <div
+            role="progressbar"
+            aria-valuenow={displayStep}
+            aria-valuemin={1}
+            aria-valuemax={3}
+            aria-label="Onboarding progress"
+            className="flex items-center gap-2 mb-2"
+          >
+            {/* keys 1, 2, 4: state.step 3 shares display step 2 with key 2 */}
             {[1, 2, 4].map((s) => (
               <div
                 key={s}
@@ -83,10 +99,7 @@ export function OnboardingPage() {
         {state.error && (
           <div className="mb-4 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
             {state.error}
-            <button
-              onClick={() => setError(null)}
-              className="ml-2 underline underline-offset-2"
-            >
+            <button onClick={() => setError(null)} className="ml-2 underline underline-offset-2">
               Dismiss
             </button>
           </div>
