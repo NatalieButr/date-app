@@ -83,27 +83,30 @@ export function ChatWindow({
 
   return (
     <div className="flex flex-col h-full">
+      {hasMore && (
+        <div className="px-4 pt-2">
+          <button
+            onClick={loadMore}
+            disabled={loading}
+            className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors mb-1"
+          >
+            {loading ? 'Loading…' : 'Load earlier messages'}
+          </button>
+          {loading && (
+            <div className="flex flex-col gap-2 mb-2">
+              <Skeleton className="h-8 w-3/4" />
+              <Skeleton className="h-8 w-1/2 self-end" />
+            </div>
+          )}
+        </div>
+      )}
       <div
         role="log"
         aria-label="Conversation"
         aria-live="polite"
+        aria-busy={loading}
         className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-2 min-h-0"
       >
-        {hasMore && (
-          <button
-            onClick={loadMore}
-            disabled={loading}
-            className="self-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-2"
-          >
-            {loading ? 'Loading…' : 'Load earlier messages'}
-          </button>
-        )}
-        {loading && hasMore && (
-          <div className="flex flex-col gap-2 mb-2">
-            <Skeleton className="h-8 w-3/4" />
-            <Skeleton className="h-8 w-1/2 self-end" />
-          </div>
-        )}
         {messages.length === 0 ? (
           <p className="text-center text-muted-foreground text-sm py-8">
             No messages yet. Say hello!

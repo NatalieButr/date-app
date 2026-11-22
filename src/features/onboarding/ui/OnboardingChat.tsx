@@ -73,6 +73,7 @@ export function OnboardingChat({ messages, onMessagesChange, onDone, basicInfo, 
         role="log"
         aria-label="Conversation"
         aria-live="polite"
+        aria-busy={streaming}
         className="flex flex-col gap-3 max-h-96 overflow-y-auto pr-1"
       >
         {messages.length === 0 && (
