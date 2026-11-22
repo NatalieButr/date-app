@@ -13,3 +13,13 @@ test.describe('Admin API (unauthenticated)', () => {
     expect(res.status()).toBe(401);
   });
 });
+
+test.describe('Admin landmark structure (KAN-32)', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/admin-landmark-test');
+  });
+
+  test('page has exactly one main landmark (no nested main inside AppShell)', async ({ page }) => {
+    await expect(page.getByRole('main')).toHaveCount(1);
+  });
+});
