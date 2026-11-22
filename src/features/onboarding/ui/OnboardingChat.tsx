@@ -109,6 +109,7 @@ export function OnboardingChat({ messages, onMessagesChange, onDone, basicInfo, 
         onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Type a message… (Enter to send)"
+        aria-label="Your message"
         className="min-h-[80px] resize-none"
         disabled={streaming || disabled}
       />
