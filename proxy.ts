@@ -13,7 +13,7 @@ const PUBLIC_PATHS = [
   // /match-modal-test is a test-only route; only expose it when USE_TEST_ROUTES is set
   // (playwright.config.ts webServer.env sets this during e2e runs). In production the
   // var is absent and the route is not public — unauthenticated requests redirect to /login.
-  ...(process.env.USE_TEST_ROUTES ? ['/match-modal-test'] : []),
+  ...(process.env.USE_TEST_ROUTES ? ['/match-modal-test', '/admin-landmark-test'] : []),
 ];
 
 function isPublicPath(pathname: string): boolean {

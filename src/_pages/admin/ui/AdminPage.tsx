@@ -31,7 +31,7 @@ async function AdminContent() {
 export function AdminPage() {
   return (
     <AppShell>
-      <main className="mx-auto max-w-6xl px-4 py-8">
+      <div className="mx-auto max-w-6xl px-4 py-8">
         <div className="mb-6">
           <h1 className="text-2xl font-bold">Admin — AI metrics</h1>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -41,7 +41,7 @@ export function AdminPage() {
         <Suspense fallback={<AdminSkeleton />}>
           <AdminContent />
         </Suspense>
-      </main>
+      </div>
     </AppShell>
   );
 }
