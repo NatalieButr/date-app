@@ -28,9 +28,7 @@ export function BioPicker({ options, chosenBio, onChoose, onConfirm, disabled }:
 
   return (
     <div className="flex flex-col gap-5">
-      <p className="text-sm text-muted-foreground">
-        Choose a bio style or edit the text directly.
-      </p>
+      <p className="text-sm text-muted-foreground">Choose a bio style or edit the text directly.</p>
 
       <div className="flex flex-col gap-3">
         {options.options.map((opt) => (
@@ -54,8 +52,12 @@ export function BioPicker({ options, chosenBio, onChoose, onConfirm, disabled }:
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <span className="text-xs font-medium text-muted-foreground">Edit your bio</span>
+        <label htmlFor="bio-picker-textarea" className="text-xs font-medium text-muted-foreground">
+          Edit your bio
+        </label>
+        {/* id is static — BioPicker is only ever mounted once per page (onboarding step 4) */}
         <Textarea
+          id="bio-picker-textarea"
           value={edited}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleEditChange(e.target.value)}
           className="min-h-[100px] resize-none"
@@ -65,11 +67,7 @@ export function BioPicker({ options, chosenBio, onChoose, onConfirm, disabled }:
         <span className="text-xs text-muted-foreground text-right">{edited.length}/500</span>
       </div>
 
-      <Button
-        onClick={onConfirm}
-        disabled={!edited.trim() || disabled}
-        className="w-full"
-      >
+      <Button onClick={onConfirm} disabled={!edited.trim() || disabled} className="w-full">
         Save profile and go to feed
       </Button>
     </div>

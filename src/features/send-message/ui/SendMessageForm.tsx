@@ -84,6 +84,7 @@ export function SendMessageForm({
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Type a message… (Enter to send)"
+          aria-label="Message"
           rows={1}
           className="min-h-[40px] max-h-32 resize-none"
           disabled={sending}
