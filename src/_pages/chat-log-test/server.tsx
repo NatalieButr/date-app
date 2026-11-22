@@ -10,5 +10,3 @@ export function ChatLogTestRoute() {
   if (!serverEnv().USE_TEST_ROUTES) notFound();
   return <ChatLogTestPage />;
 }
-
-export const dynamic = 'force-dynamic';
