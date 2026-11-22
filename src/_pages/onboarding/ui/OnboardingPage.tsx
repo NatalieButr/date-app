@@ -58,32 +58,31 @@ export function OnboardingPage() {
     }
   }, [state.basicInfo, state.extracted, state.chosenBio, setError]);
 
+  // step 3 is "Analyzing" (background async, no user action) — it shares display step 2
+  const displayStep = state.step === 3 ? 2 : state.step === 4 ? 3 : state.step;
+
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
         <div className="mb-8">
-          {(() => {
-            const displayStep = state.step === 3 ? 2 : state.step === 4 ? 3 : state.step;
-            return (
+          <div
+            role="progressbar"
+            aria-valuenow={displayStep}
+            aria-valuemin={1}
+            aria-valuemax={3}
+            aria-label="Onboarding progress"
+            className="flex items-center gap-2 mb-2"
+          >
+            {/* keys 1, 2, 4: state.step 3 shares display step 2 with key 2 */}
+            {[1, 2, 4].map((s) => (
               <div
-                role="progressbar"
-                aria-valuenow={displayStep}
-                aria-valuemin={1}
-                aria-valuemax={3}
-                aria-label="Onboarding progress"
-                className="flex items-center gap-2 mb-2"
-              >
-                {[1, 2, 4].map((s) => (
-                  <div
-                    key={s}
-                    className={`h-1.5 flex-1 rounded-full transition-colors ${
-                      state.step >= s ? 'bg-primary' : 'bg-muted'
-                    }`}
-                  />
-                ))}
-              </div>
-            );
-          })()}
+                key={s}
+                className={`h-1.5 flex-1 rounded-full transition-colors ${
+                  state.step >= s ? 'bg-primary' : 'bg-muted'
+                }`}
+              />
+            ))}
+          </div>
           <p className="text-xs text-muted-foreground">
             Step {state.step === 3 ? 2 : state.step === 4 ? 3 : state.step} of 3 —{' '}
             {STEP_LABELS[state.step]}
