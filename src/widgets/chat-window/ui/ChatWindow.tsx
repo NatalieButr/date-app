@@ -83,7 +83,12 @@ export function ChatWindow({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-2 min-h-0">
+      <div
+        role="log"
+        aria-label="Conversation"
+        aria-live="polite"
+        className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-2 min-h-0"
+      >
         {hasMore && (
           <button
             onClick={loadMore}

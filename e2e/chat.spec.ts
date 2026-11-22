@@ -32,3 +32,15 @@ test.describe('Coach API (unauthenticated)', () => {
     expect(res.status()).toBe(401);
   });
 });
+
+test.describe('Chat log live regions (KAN-33)', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/chat-log-test');
+  });
+
+  test('page has two role="log" live regions with accessible name "Conversation"', async ({
+    page,
+  }) => {
+    await expect(page.getByRole('log', { name: 'Conversation' })).toHaveCount(2);
+  });
+});
