@@ -38,6 +38,7 @@ test.describe('A11y bundle fixes (KAN-36)', () => {
     const section = page.getByRole('region', { name: 'Avatar fallback divs' });
     const fallback = section.locator('[aria-hidden="true"]');
     await expect(fallback).toHaveCount(1);
+    await expect(fallback.first()).toBeVisible();
   });
 
   test('admin metrics table has aria-label', async ({ page }) => {

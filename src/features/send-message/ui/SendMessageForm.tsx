@@ -93,7 +93,7 @@ export function SendMessageForm({
           type="submit"
           disabled={!value.trim() || sending}
           size="sm"
-          aria-label={sending ? 'Sending message' : 'Send'}
+          aria-label={sending ? 'Sending message' : undefined}
         >
           {sending ? '…' : 'Send'}
         </Button>
