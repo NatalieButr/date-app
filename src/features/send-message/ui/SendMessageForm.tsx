@@ -89,7 +89,12 @@ export function SendMessageForm({
           className="min-h-[40px] max-h-32 resize-none"
           disabled={sending}
         />
-        <Button type="submit" disabled={!value.trim() || sending} size="sm">
+        <Button
+          type="submit"
+          disabled={!value.trim() || sending}
+          size="sm"
+          aria-label={sending ? 'Sending message' : 'Send'}
+        >
           {sending ? '…' : 'Send'}
         </Button>
       </div>

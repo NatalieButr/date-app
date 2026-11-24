@@ -137,7 +137,7 @@ export function AdminDashboard({ initial }: AdminDashboardProps) {
 
           {/* Metrics table */}
           <div className="overflow-x-auto rounded-lg border">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm" aria-label="AI call metrics">
               <thead className="bg-muted/50">
                 <tr>
                   <th className="px-3 py-2 text-left font-medium">Feature</th>

@@ -20,6 +20,7 @@ const PUBLIC_PATHS = [
         '/chat-log-test',
         '/textarea-labels-test',
         '/onboarding-progress-test',
+        '/a11y-bundle-test',
       ]
     : []),
 ];

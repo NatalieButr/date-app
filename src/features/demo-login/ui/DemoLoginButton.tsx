@@ -33,7 +33,11 @@ export function DemoLoginButton({ className }: Props) {
       >
         {isPending ? 'Signing in…' : 'Try demo'}
       </Button>
-      {error && <p className="text-destructive text-xs">{error}</p>}
+      {error ? (
+        <p role="alert" className="text-destructive text-xs">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }

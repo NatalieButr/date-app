@@ -49,7 +49,10 @@ async function ChatContent({ matchId }: Props) {
             className="h-9 w-9 rounded-full object-cover"
           />
         ) : (
-          <div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center text-sm font-semibold">
+          <div
+            aria-hidden="true"
+            className="h-9 w-9 rounded-full bg-muted flex items-center justify-center text-sm font-semibold"
+          >
             {(otherProfile?.name ?? '?')[0]}
           </div>
         )}
