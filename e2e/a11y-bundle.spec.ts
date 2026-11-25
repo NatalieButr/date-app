@@ -10,9 +10,11 @@ test.describe('A11y bundle fixes (KAN-36)', () => {
     await expect(link).toHaveAttribute('aria-current', 'page');
   });
 
-  test('matches badge has accessible label', async ({ page }) => {
-    const badge = page.getByLabel('0 new matches');
-    await expect(badge).toBeVisible();
+  test('matches badge is decorative (aria-hidden)', async ({ page }) => {
+    const section = page.getByRole('region', { name: 'NavBar matches badge' });
+    const badge = section.locator('[aria-hidden="true"]');
+    await expect(badge).toHaveCount(1);
+    await expect(badge.first()).toBeVisible();
   });
 
   test('error message has role=alert', async ({ page }) => {
@@ -22,10 +24,10 @@ test.describe('A11y bundle fixes (KAN-36)', () => {
     await expect(alert).toHaveText('Demo login failed');
   });
 
-  test('send button has aria-label="Send"', async ({ page }) => {
+  test('send button has accessible name "Send" without aria-label', async ({ page }) => {
     const sendBtn = page.getByRole('button', { name: 'Send', exact: true });
     await expect(sendBtn).toBeVisible();
-    await expect(sendBtn).toHaveAttribute('aria-label', 'Send');
+    await expect(sendBtn).not.toHaveAttribute('aria-label');
   });
 
   test('sending button has aria-label="Sending message"', async ({ page }) => {

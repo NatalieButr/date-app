@@ -1,7 +1,6 @@
 export function A11yBundleTestPage() {
   return (
     <div className="p-6 flex flex-col gap-8 max-w-lg mx-auto">
-      {/* Fix 1: NavBar active link aria-current */}
       <section aria-label="NavBar active link">
         <h2 className="text-sm font-semibold mb-3">NavBar — aria-current on active link</h2>
         <nav>
@@ -11,18 +10,16 @@ export function A11yBundleTestPage() {
         </nav>
       </section>
 
-      {/* Fix 2: NavBar matches badge aria-label */}
       <section aria-label="NavBar matches badge">
-        <h2 className="text-sm font-semibold mb-3">NavBar — badge aria-label</h2>
+        <h2 className="text-sm font-semibold mb-3">NavBar — badge aria-hidden (decorative)</h2>
         <span
-          aria-label="0 new matches"
+          aria-hidden="true"
           className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-secondary px-1 text-[10px]"
         >
           0
         </span>
       </section>
 
-      {/* Fix 3: DemoLoginButton error role=alert */}
       <section aria-label="DemoLoginButton error">
         <h2 className="text-sm font-semibold mb-3">DemoLoginButton — error role=alert</h2>
         <p role="alert" className="text-destructive text-xs">
@@ -30,12 +27,9 @@ export function A11yBundleTestPage() {
         </p>
       </section>
 
-      {/* Fix 4: SendMessageForm send button aria-label */}
       <section aria-label="SendMessageForm send button">
         <h2 className="text-sm font-semibold mb-3">SendMessageForm — send button aria-label</h2>
-        <button aria-label="Send" className="text-sm px-3 py-1 border rounded">
-          Send
-        </button>
+        <button className="text-sm px-3 py-1 border rounded">Send</button>
         <button
           aria-label="Sending message"
           className="text-sm px-3 py-1 border rounded ml-2"
@@ -45,7 +39,6 @@ export function A11yBundleTestPage() {
         </button>
       </section>
 
-      {/* Fix 5: Avatar fallback divs aria-hidden */}
       <section aria-label="Avatar fallback divs">
         <h2 className="text-sm font-semibold mb-3">Avatar fallback — aria-hidden</h2>
         <div
@@ -56,7 +49,6 @@ export function A11yBundleTestPage() {
         </div>
       </section>
 
-      {/* Fix 6: Admin table aria-label */}
       <section aria-label="Admin metrics table">
         <h2 className="text-sm font-semibold mb-3">Admin table — aria-label</h2>
         <table aria-label="AI call metrics" className="w-full text-sm border">
