@@ -70,7 +70,7 @@ export function SendMessageForm({
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      void handleSubmit(e as unknown as React.SyntheticEvent);
+      void handleSubmit(e);
     }
   }
 
