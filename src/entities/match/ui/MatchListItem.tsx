@@ -16,13 +16,12 @@ export function MatchListItem({ match, otherName, otherAvatar }: Props) {
     >
       {otherAvatar ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={otherAvatar}
-          alt={otherName}
-          className="h-12 w-12 rounded-full object-cover"
-        />
+        <img src={otherAvatar} alt={otherName} className="h-12 w-12 rounded-full object-cover" />
       ) : (
-        <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center text-lg font-semibold">
+        <div
+          aria-hidden="true"
+          className="h-12 w-12 rounded-full bg-muted flex items-center justify-center text-lg font-semibold"
+        >
           {otherName[0]}
         </div>
       )}

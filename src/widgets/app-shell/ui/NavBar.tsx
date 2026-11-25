@@ -21,7 +21,7 @@ export function NavBar() {
 
   const initials = viewer?.profile?.name
     ? viewer.profile.name.slice(0, 2).toUpperCase()
-    : viewer?.email?.slice(0, 2).toUpperCase() ?? '?';
+    : (viewer?.email?.slice(0, 2).toUpperCase() ?? '?');
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur">
@@ -35,14 +35,21 @@ export function NavBar() {
             <Link
               key={href}
               href={href}
+              aria-current={pathname.startsWith(href) ? 'page' : undefined}
               className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent ${
-                pathname.startsWith(href) ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'
+                pathname.startsWith(href)
+                  ? 'bg-accent text-accent-foreground'
+                  : 'text-muted-foreground'
               }`}
             >
               {label}
               {/* TODO(T-06): matches badge */}
               {href === '/matches' && (
-                <Badge variant="secondary" className="ml-1.5 h-4 min-w-4 px-1 text-[10px]">
+                <Badge
+                  variant="secondary"
+                  className="ml-1.5 h-4 min-w-4 px-1 text-[10px]"
+                  aria-label="0 new matches"
+                >
                   0
                 </Badge>
               )}
@@ -52,7 +59,10 @@ export function NavBar() {
 
         <div className="flex items-center gap-2">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={viewer?.profile?.avatar_url ?? undefined} alt={viewer?.profile?.name} />
+            <AvatarImage
+              src={viewer?.profile?.avatar_url ?? undefined}
+              alt={viewer?.profile?.name}
+            />
             <AvatarFallback className="text-xs">{initials}</AvatarFallback>
           </Avatar>
           <form action={signOut}>
