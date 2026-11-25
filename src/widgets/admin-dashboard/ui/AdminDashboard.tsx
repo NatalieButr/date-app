@@ -34,7 +34,7 @@ export function AdminDashboard({ initial }: AdminDashboardProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  async function handleFilter(e: React.FormEvent) {
+  async function handleFilter(e: React.SyntheticEvent) {
     e.preventDefault();
     setLoading(true);
     setError('');
