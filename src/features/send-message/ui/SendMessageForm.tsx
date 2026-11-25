@@ -1,6 +1,6 @@
 'use client';
 
-import { type FormEvent, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { Button } from '@/shared/ui/button';
 import { Textarea } from '@/shared/ui/textarea';
@@ -35,7 +35,7 @@ export function SendMessageForm({
     }
   }
 
-  async function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
     const body = value.trim();
     if (!body || sending) return;
@@ -70,7 +70,7 @@ export function SendMessageForm({
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      void handleSubmit(e as unknown as FormEvent);
+      void handleSubmit(e as unknown as React.SyntheticEvent);
     }
   }
 
