@@ -36,11 +36,23 @@ export function ChatWindow({
     const unsubscribe = subscribeToMatch(supabaseUrl, supabaseKey, matchId, (newMessage) => {
       setMessages((prev) => {
         if (prev.some((m) => m.id === newMessage.id)) return prev;
+        // Replace the optimistic bubble the sender added before the POST completed,
+        // so the live region announces the message only once instead of twice.
+        if (newMessage.sender_id === viewerId) {
+          const idx = prev.findIndex(
+            (m) => m.id.startsWith('optimistic-') && m.body === newMessage.body,
+          );
+          if (idx !== -1) {
+            const next = [...prev];
+            next[idx] = newMessage;
+            return next;
+          }
+        }
         return [...prev, newMessage];
       });
     });
     return unsubscribe;
-  }, [matchId, supabaseUrl, supabaseKey]);
+  }, [matchId, supabaseUrl, supabaseKey, viewerId]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
