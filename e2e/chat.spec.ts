@@ -43,4 +43,11 @@ test.describe('Chat log live regions (KAN-33)', () => {
   }) => {
     await expect(page.getByRole('log', { name: 'Conversation' })).toHaveCount(2);
   });
+
+  test('ChatWindow empty-state renders exactly one "No messages" notice — no duplicate bubbles (KAN-38)', async ({
+    page,
+  }) => {
+    const log = page.getByRole('log', { name: 'Conversation' }).first();
+    await expect(log.getByText('No messages yet. Say hello!')).toHaveCount(1);
+  });
 });

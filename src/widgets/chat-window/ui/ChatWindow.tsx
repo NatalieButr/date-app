@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { MessageBubble, subscribeToMatch, type Message } from '@/entities/message';
+import { applyRealtime } from '../lib/applyRealtime';
 import { CoachButton } from '@/features/chat-coach';
 import { IcebreakersButton } from '@/features/icebreakers';
 import { SendMessageForm } from '@/features/send-message';
@@ -34,13 +35,10 @@ export function ChatWindow({
 
   useEffect(() => {
     const unsubscribe = subscribeToMatch(supabaseUrl, supabaseKey, matchId, (newMessage) => {
-      setMessages((prev) => {
-        if (prev.some((m) => m.id === newMessage.id)) return prev;
-        return [...prev, newMessage];
-      });
+      setMessages((prev) => applyRealtime(prev, newMessage, viewerId));
     });
     return unsubscribe;
-  }, [matchId, supabaseUrl, supabaseKey]);
+  }, [matchId, supabaseUrl, supabaseKey, viewerId]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
