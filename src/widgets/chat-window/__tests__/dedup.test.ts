@@ -2,9 +2,12 @@ import { describe, expect, it } from 'vitest';
 
 import type { Message } from '@/entities/message';
 
+import { applyRealtime } from '../lib/applyRealtime';
+
 const VIEWER_ID = 'aaaaaaaa-0000-0000-0000-000000000001';
 const OTHER_ID = 'bbbbbbbb-0000-0000-0000-000000000002';
 
+// id fields intentionally use non-UUID strings for test brevity; Message schema is not validated here.
 function makeMessage(overrides: Partial<Message> & { id: string }): Message {
   return {
     match_id: 'cccccccc-0000-0000-0000-000000000003',
@@ -15,20 +18,6 @@ function makeMessage(overrides: Partial<Message> & { id: string }): Message {
     created_at: '2026-01-01T00:00:00Z',
     ...overrides,
   };
-}
-
-// Mirrors the setMessages callback in ChatWindow exactly.
-function applyRealtime(prev: Message[], msg: Message, viewerId: string): Message[] {
-  if (prev.some((m) => m.id === msg.id)) return prev;
-  if (msg.sender_id === viewerId) {
-    const idx = prev.findIndex((m) => m.id.startsWith('optimistic-') && m.body === msg.body);
-    if (idx !== -1) {
-      const next = [...prev];
-      next[idx] = msg;
-      return next;
-    }
-  }
-  return [...prev, msg];
 }
 
 describe('ChatWindow optimistic dedup (setMessages callback)', () => {

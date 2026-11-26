@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { MessageBubble, subscribeToMatch, type Message } from '@/entities/message';
+import { applyRealtime } from '../lib/applyRealtime';
 import { CoachButton } from '@/features/chat-coach';
 import { IcebreakersButton } from '@/features/icebreakers';
 import { SendMessageForm } from '@/features/send-message';
@@ -34,22 +35,7 @@ export function ChatWindow({
 
   useEffect(() => {
     const unsubscribe = subscribeToMatch(supabaseUrl, supabaseKey, matchId, (newMessage) => {
-      setMessages((prev) => {
-        if (prev.some((m) => m.id === newMessage.id)) return prev;
-        // Replace the optimistic bubble the sender added before the POST completed,
-        // so the live region announces the message only once instead of twice.
-        if (newMessage.sender_id === viewerId) {
-          const idx = prev.findIndex(
-            (m) => m.id.startsWith('optimistic-') && m.body === newMessage.body,
-          );
-          if (idx !== -1) {
-            const next = [...prev];
-            next[idx] = newMessage;
-            return next;
-          }
-        }
-        return [...prev, newMessage];
-      });
+      setMessages((prev) => applyRealtime(prev, newMessage, viewerId));
     });
     return unsubscribe;
   }, [matchId, supabaseUrl, supabaseKey, viewerId]);
